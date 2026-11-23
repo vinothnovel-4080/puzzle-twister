@@ -20,10 +20,25 @@ IST = datetime.timezone(datetime.timedelta(hours=5, minutes=30))
 HERE = os.path.dirname(os.path.abspath(__file__))
 
 
-def graph(method, path, **params):
-    base = os.environ.get("GRAPH_BASE", "https://graph.facebook.com/v24.0")
+def token():
     # Tolerate stray spaces, line breaks or quotes from pasting the secret.
-    params["access_token"] = os.environ["INSTAGRAM_ACCESS_TOKEN"].strip().strip("'\"").strip()
+    return os.environ["INSTAGRAM_ACCESS_TOKEN"].strip().strip("'\"").strip()
+
+
+def graph_base():
+    # Pick the API from the token type: Instagram-Login tokens start with "IG",
+    # Facebook-Login tokens with "EAA". GRAPH_BASE is only used for other tokens.
+    t = token()
+    if t.startswith("IG"):
+        return "https://graph.instagram.com/v24.0"
+    if t.startswith("EAA"):
+        return "https://graph.facebook.com/v24.0"
+    return os.environ.get("GRAPH_BASE") or "https://graph.facebook.com/v24.0"
+
+
+def graph(method, path, **params):
+    base = graph_base()
+    params["access_token"] = token()
     data = urllib.parse.urlencode(params).encode()
     if method == "GET":
         req = urllib.request.Request(f"{base}/{path}?{data.decode()}")
@@ -62,23 +77,33 @@ def main():
     if "--dry-run" in args:
         # Read-only check that the token and account ID work (posts nothing).
         if os.environ.get("INSTAGRAM_ACCESS_TOKEN") and os.environ.get("IG_USER_ID"):
-            t = os.environ["INSTAGRAM_ACCESS_TOKEN"].strip().strip("'\"").strip()
+            t = token()
             # Safe hint only: Instagram-Login tokens start with "IG", Facebook ones with "EAA".
-            print(f"Token starts with '{t[:3]}', {len(t)} characters. API: {os.environ.get('GRAPH_BASE', 'graph.facebook.com (default)')}")
+            print(f"Token starts with '{t[:3]}', {len(t)} characters. API: {graph_base()}")
             try:
                 acct = graph("GET", os.environ["IG_USER_ID"].strip(), fields="username")
                 print(f"Token OK. Will post as @{acct.get('username')}")
             except SystemExit as e:
                 print(f"IG_USER_ID check failed: {e}")
                 # Instagram-Login tokens: the account the token belongs to.
-                if "graph.instagram.com" in os.environ.get("GRAPH_BASE", ""):
+                if "graph.instagram.com" in graph_base():
                     try:
                         me = graph("GET", "me", fields="user_id,username")
                         print(f"  Token belongs to @{me.get('username')}  IG_USER_ID = {me.get('user_id')}")
                     except SystemExit as e2:
                         print(f"  Could not read the token's account: {e2}")
                     raise SystemExit("Set the IG_USER_ID secret to the Instagram account ID shown above.")
-                # Facebook-Login tokens: list the Instagram business accounts linked to your Pages.
+                # Facebook Page token: the Page's own linked Instagram account.
+                try:
+                    me = graph("GET", "me", fields="name,instagram_business_account{id,username}")
+                    ig = me.get("instagram_business_account")
+                    if ig:
+                        print(f"  Page '{me.get('name')}' -> Instagram @{ig.get('username')}  IG_USER_ID = {ig['id']}")
+                        raise SystemExit("Set the IG_USER_ID secret to the Instagram account ID shown above.")
+                except SystemExit as e2:
+                    if "Set the IG_USER_ID" in str(e2):
+                        raise
+                # Facebook user token: list the Instagram business accounts linked to your Pages.
                 try:
                     pages = graph("GET", "me/accounts", fields="name,instagram_business_account{id,username}")
                     found = [p for p in pages.get("data", []) if p.get("instagram_business_account")]
