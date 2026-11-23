@@ -1,15 +1,14 @@
 name: Post reel to Instagram
 
-# Every day at 02:00 UTC = 7:30 am IST:
-#   1. "preview" shows the proof (day, video link, caption, hashtags) on the run page
+# Every day at 02:30 UTC = 8:00 am IST:
+#   1. "preview" records the proof (day, video link, caption, hashtags) on the run page
 #      and checks the token, without posting anything.
-#   2. "post" waits for your approval (GitHub emails you: "Review pending"),
-#      then posts that exact day's reel. Open the run, check the proof, click
-#      "Review deployments" -> tick "instagram" -> "Approve and deploy".
+#   2. "post" then posts that exact day's reel automatically.
 # post_reel.py works out the day from START_DATE and does nothing outside the 11-day series.
+# GitHub can start scheduled runs a few minutes late at busy times.
 on:
   schedule:
-    - cron: "0 2 * * *"
+    - cron: "30 2 * * *"
   workflow_dispatch:
     inputs:
       day:
@@ -74,7 +73,7 @@ jobs:
             echo '```'
             grep -E '^(Token OK|Video reachable)' proof.txt | sed 's/^/- /' || true
             echo
-            echo "If this looks right, approve the **post** job to publish it."
+            echo "The **post** job publishes this automatically."
           } >> "$GITHUB_STEP_SUMMARY"
           curl -fsI "$video" > /dev/null || { echo "::error::Video link not reachable: $video"; exit 1; }
 
@@ -83,7 +82,6 @@ jobs:
     if: needs.preview.outputs.day != '0' && !inputs.dry_run
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    environment: instagram   # requires your approval before this job runs
     steps:
       - uses: actions/checkout@v4
 

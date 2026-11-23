@@ -25,13 +25,12 @@ Everything runs on GitHub. Nothing needs to be installed on your computer.
    `https://vinothnovel-4080.github.io/puzzle-twister/`.
 5. **Test the post:** Actions → *Post reel to Instagram* → Run workflow, tick *dry run*. Check the log shows the right day, video link and caption.
 
-## Daily posting with a proof and your approval
-Every day at 7:30 am IST the **Post reel to Instagram** workflow:
-1. Builds the **proof** (day, video link, caption, hashtags) and checks the token. Nothing is posted.
-2. Waits for you. GitHub emails you *"Review pending"*. Open the run, read the proof on the summary page,
-   then click **Review deployments → tick `instagram` → Approve and deploy**. Only then is the reel posted.
+## Daily posting
+Every day at 8:00 am IST the **Post reel to Instagram** workflow:
+1. Records the **proof** (day, video link, caption, hashtags) on the run's summary page and checks the token.
+2. Posts that day's reel automatically. The log ends with the Instagram link.
 
-The approval comes from the `instagram` environment (Settings → Environments → instagram → Required reviewers).
+If a run fails, GitHub emails you; re-run that day from Actions → *Post reel to Instagram* → *Run workflow*.
 Captions use at most 5 hashtags (Instagram's current limit) and put the search keywords in the first line.
 
 ## Posting a day by hand
