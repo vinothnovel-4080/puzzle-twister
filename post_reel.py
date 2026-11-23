@@ -62,6 +62,9 @@ def main():
     if "--dry-run" in args:
         # Read-only check that the token and account ID work (posts nothing).
         if os.environ.get("INSTAGRAM_ACCESS_TOKEN") and os.environ.get("IG_USER_ID"):
+            t = os.environ["INSTAGRAM_ACCESS_TOKEN"].strip().strip("'\"").strip()
+            # Safe hint only: Instagram-Login tokens start with "IG", Facebook ones with "EAA".
+            print(f"Token starts with '{t[:3]}', {len(t)} characters. API: {os.environ.get('GRAPH_BASE', 'graph.facebook.com (default)')}")
             try:
                 acct = graph("GET", os.environ["IG_USER_ID"].strip(), fields="username")
                 print(f"Token OK. Will post as @{acct.get('username')}")
