@@ -22,7 +22,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 
 def graph(method, path, **params):
     base = os.environ.get("GRAPH_BASE", "https://graph.facebook.com/v24.0")
-    params["access_token"] = os.environ["INSTAGRAM_ACCESS_TOKEN"]
+    # Tolerate stray spaces, line breaks or quotes from pasting the secret.
+    params["access_token"] = os.environ["INSTAGRAM_ACCESS_TOKEN"].strip().strip("'\"").strip()
     data = urllib.parse.urlencode(params).encode()
     if method == "GET":
         req = urllib.request.Request(f"{base}/{path}?{data.decode()}")
@@ -61,7 +62,7 @@ def main():
     if "--dry-run" in args:
         # Read-only check that the token and account ID work (posts nothing).
         if os.environ.get("INSTAGRAM_ACCESS_TOKEN") and os.environ.get("IG_USER_ID"):
-            acct = graph("GET", os.environ["IG_USER_ID"], fields="username")
+            acct = graph("GET", os.environ["IG_USER_ID"].strip(), fields="username")
             print(f"Token OK. Will post as @{acct.get('username')}")
         else:
             print("Token or IG_USER_ID not set; skipped the account check.")
@@ -72,7 +73,7 @@ def main():
             print(f"Video reachable ({r.status}, {r.headers.get('Content-Length')} bytes)")
     except Exception as e:
         raise SystemExit(f"Video URL not reachable: {url} ({e}). Run the 'Build reels' workflow first.")
-    ig = os.environ["IG_USER_ID"]
+    ig = os.environ["IG_USER_ID"].strip()
     c = graph("POST", f"{ig}/media", media_type="REELS", video_url=url, caption=caption, share_to_feed="true")
     cid = c["id"]
     for _ in range(60):  # up to ~10 min for Instagram to process the video
