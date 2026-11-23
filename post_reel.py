@@ -62,8 +62,23 @@ def main():
     if "--dry-run" in args:
         # Read-only check that the token and account ID work (posts nothing).
         if os.environ.get("INSTAGRAM_ACCESS_TOKEN") and os.environ.get("IG_USER_ID"):
-            acct = graph("GET", os.environ["IG_USER_ID"].strip(), fields="username")
-            print(f"Token OK. Will post as @{acct.get('username')}")
+            try:
+                acct = graph("GET", os.environ["IG_USER_ID"].strip(), fields="username")
+                print(f"Token OK. Will post as @{acct.get('username')}")
+            except SystemExit as e:
+                print(f"IG_USER_ID check failed: {e}")
+                # Facebook-Login tokens: list the Instagram business accounts linked to your Pages.
+                try:
+                    pages = graph("GET", "me/accounts", fields="name,instagram_business_account{id,username}")
+                    found = [p for p in pages.get("data", []) if p.get("instagram_business_account")]
+                    for p in found:
+                        ig = p["instagram_business_account"]
+                        print(f"  Page '{p.get('name')}' -> Instagram @{ig.get('username')}  IG_USER_ID = {ig['id']}")
+                    if not found:
+                        print("  No Instagram business account is linked to a Facebook Page this token can see.")
+                except SystemExit as e2:
+                    print(f"  Could not list linked accounts: {e2}")
+                raise SystemExit("Set the IG_USER_ID secret to the Instagram account ID shown above.")
         else:
             print("Token or IG_USER_ID not set; skipped the account check.")
         return
