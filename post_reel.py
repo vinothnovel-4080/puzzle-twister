@@ -69,6 +69,9 @@ def main():
         day = int(args[args.index("--day") + 1])
     else:
         day = (datetime.datetime.now(IST).date() - START_DATE).days + 1
+    if "--which-day" in args:
+        print(day if 1 <= day <= 11 else 0)
+        return
     if not 1 <= day <= 11:
         print(f"No post scheduled (day {day}). Series runs {START_DATE} for 11 days.")
         return

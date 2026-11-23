@@ -1,18 +1,22 @@
 name: Post reel to Instagram
 
-# Runs every day at 02:30 UTC = 8:00 am IST and posts that day's reel.
+# Every day at 02:00 UTC = 7:30 am IST:
+#   1. "preview" shows the proof (day, video link, caption, hashtags) on the run page
+#      and checks the token, without posting anything.
+#   2. "post" waits for your approval (GitHub emails you: "Review pending"),
+#      then posts that exact day's reel. Open the run, check the proof, click
+#      "Review deployments" -> tick "instagram" -> "Approve and deploy".
 # post_reel.py works out the day from START_DATE and does nothing outside the 11-day series.
-# GitHub can start scheduled runs a few minutes late at busy times.
 on:
   schedule:
-    - cron: "30 2 * * *"
+    - cron: "0 2 * * *"
   workflow_dispatch:
     inputs:
       day:
         description: "Post a specific day (1-11). Leave empty for today's."
         required: false
       dry_run:
-        description: "Only print what would be posted"
+        description: "Only show the proof, don't post"
         type: boolean
         default: false
 
@@ -23,16 +27,63 @@ concurrency:
   group: instagram-post
   cancel-in-progress: false
 
+env:
+  INSTAGRAM_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_ACCESS_TOKEN }}
+  IG_USER_ID: ${{ secrets.IG_USER_ID }}
+  MEDIA_BASE_URL: ${{ vars.MEDIA_BASE_URL || format('https://{0}.github.io/{1}', github.repository_owner, github.event.repository.name) }}
+  START_DATE: ${{ vars.START_DATE }}
+  GRAPH_BASE: ${{ vars.GRAPH_BASE }}
+
 jobs:
+  preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      day: ${{ steps.day.outputs.day }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Work out the day
+        id: day
+        env:
+          DAY_INPUT: ${{ inputs.day }}
+        run: |
+          day="${DAY_INPUT:-$(python post_reel.py --which-day)}"
+          echo "day=$day" >> "$GITHUB_OUTPUT"
+          echo "Day: $day"
+
+      - name: Proof
+        if: steps.day.outputs.day != '0'
+        env:
+          DAY: ${{ steps.day.outputs.day }}
+        run: |
+          python post_reel.py --day "$DAY" --dry-run | tee proof.txt
+          video=$(grep -m1 '^Video: ' proof.txt | cut -d' ' -f2)
+          {
+            echo "## Proof for Day $DAY"
+            echo
+            echo "**Video:** [$video]($video)"
+            echo
+            echo "**Caption and hashtags:**"
+            echo '```'
+            sed -n '/^Caption:/,/^Token starts/p' proof.txt | sed '1d;$d'
+            echo '```'
+            grep -E '^(Token OK|Video reachable)' proof.txt | sed 's/^/- /' || true
+            echo
+            echo "If this looks right, approve the **post** job to publish it."
+          } >> "$GITHUB_STEP_SUMMARY"
+          curl -fsI "$video" > /dev/null || { echo "::error::Video link not reachable: $video"; exit 1; }
+
   post:
+    needs: preview
+    if: needs.preview.outputs.day != '0' && !inputs.dry_run
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    env:
-      INSTAGRAM_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_ACCESS_TOKEN }}
-      IG_USER_ID: ${{ secrets.IG_USER_ID }}
-      MEDIA_BASE_URL: ${{ vars.MEDIA_BASE_URL || format('https://{0}.github.io/{1}', github.repository_owner, github.event.repository.name) }}
-      START_DATE: ${{ vars.START_DATE }}
-      GRAPH_BASE: ${{ vars.GRAPH_BASE || 'https://graph.facebook.com/v24.0' }}
+    environment: instagram   # requires your approval before this job runs
     steps:
       - uses: actions/checkout@v4
 
@@ -41,13 +92,11 @@ jobs:
           python-version: "3.12"
 
       - name: Check secrets
-        if: ${{ !inputs.dry_run }}
         run: |
           [ -n "$INSTAGRAM_ACCESS_TOKEN" ] || { echo "::error::Add the INSTAGRAM_ACCESS_TOKEN repository secret"; exit 1; }
           [ -n "$IG_USER_ID" ] || { echo "::error::Add the IG_USER_ID repository secret"; exit 1; }
 
       - name: Post
         env:
-          DAY: ${{ inputs.day }}
-          DRY: ${{ inputs.dry_run && '--dry-run' || '' }}
-        run: python post_reel.py ${DAY:+--day "$DAY"} $DRY
+          DAY: ${{ needs.preview.outputs.day }}
+        run: python post_reel.py --day "$DAY"
