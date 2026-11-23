@@ -1,0 +1,7 @@
+out/
+tmp/
+__pycache__/
+*.onnx
+*.bin
+*.wav
+upload_to_github.bat

@@ -1,0 +1,523 @@
+{
+  "brand": {
+    "name": "PUZZLE TWISTER",
+    "handle": "@puzzledaily_123",
+    "tagline": "One puzzle. Every age. Every day."
+  },
+  "posting_plan": "Daily, same time. Reel: reels/puzzle_twister_dayNN_reel.mp4 (opens with yesterday's answer, then today's puzzle, never today's answer). Carousel (optional): day N-1 03_answer.png, then day N 01_puzzle.png and 02_hint.png (Day 1: puzzle + hint only). Day 11: post reels/puzzle_twister_day10_answer_reel.mp4 to close the series, or open the next batch with it.",
+  "puzzles": [
+    {
+      "day": 1,
+      "type": "Number Pattern",
+      "visual": "number_tiles",
+      "visual_data": [
+        "2",
+        "6",
+        "12",
+        "20",
+        "30",
+        "?"
+      ],
+      "question": "What number comes next?",
+      "hint": "Look at the gaps between the numbers: +4, +6, +8 ...",
+      "answer": "42",
+      "explanation": "The gaps grow by 2 each time: +4, +6, +8, +10, +12. So 30 + 12 = 42. Another way to see it: 1x2, 2x3, 3x4, 4x5, 5x6, 6x7.",
+      "bonus_question": "What is the 10th number in this pattern?",
+      "bonus_answer": "110 (10 x 11)",
+      "caption": "Day 1 warm-up! Can you crack the pattern? Kids, spot the gaps. Experts, try the bonus. Drop your answer in the comments and swipe for a hint. Answer tomorrow!",
+      "hashtags": [
+        "#puzzletwister",
+        "#brainteaser",
+        "#numberpuzzle",
+        "#mathpuzzle",
+        "#familyfun",
+        "#braingames"
+      ],
+      "reel_caption": "🧩 Puzzle Twister · Day 1: Number Pattern\n\nWhat number comes next?\n\nA new puzzle every day, made for kids, teens and grown-ups. 🎉\n\n🧠 Bonus for experts: What is the 10th number in this pattern?\n\n👇 Comment your answer. We reveal it tomorrow!\n🔔 Follow @puzzledaily_123 so you don't miss the reveal.\n\n",
+      "reel_hashtags": [
+        "#puzzletwister",
+        "#dailypuzzle",
+        "#brainteaser",
+        "#puzzleoftheday",
+        "#numberpuzzle",
+        "#mathpuzzle",
+        "#patterns",
+        "#braingames",
+        "#familyfun",
+        "#kidsactivities",
+        "#iqtest",
+        "#thinkfast",
+        "#reelsindia"
+      ]
+    },
+    {
+      "day": 2,
+      "type": "Shape Math",
+      "visual": "shape_equations",
+      "visual_data": [
+        [
+          [
+            "circle",
+            "circle",
+            "circle"
+          ],
+          "30"
+        ],
+        [
+          [
+            "circle",
+            "triangle",
+            "triangle"
+          ],
+          "18"
+        ],
+        [
+          [
+            "triangle",
+            "-",
+            "square"
+          ],
+          "2"
+        ],
+        [
+          [
+            "square",
+            "circle",
+            "triangle"
+          ],
+          "?"
+        ]
+      ],
+      "question": "Each shape stands for a number. What is the last line?",
+      "hint": "Start with the first line: three circles make 30, so one circle is ...",
+      "answer": "16",
+      "explanation": "Circle = 10 (30 / 3). Then 10 + 2 triangles = 18, so Triangle = 4. Then 4 - Square = 2, so Square = 2. Square + Circle + Triangle = 2 + 10 + 4 = 16.",
+      "bonus_question": "What is Square + Circle x Triangle?",
+      "bonus_answer": "42 (multiply first: 10 x 4 = 40, then 2 + 40)",
+      "caption": "Shapes have secret values! Solve line by line and tell us the last answer. The bonus has a sneaky twist... Comment below!",
+      "hashtags": [
+        "#puzzletwister",
+        "#mathchallenge",
+        "#shapepuzzle",
+        "#brainteaser",
+        "#kidsactivities",
+        "#iqtest"
+      ],
+      "reel_caption": "🧩 Puzzle Twister · Day 2: Shape Math\n\nEach shape stands for a number. What is the last line?\n\n✅ Yesterday's answer: 42. Did you get it right?\n\n🧠 Bonus for experts: What is Square + Circle x Triangle?\n\n👇 Comment your answer. We reveal it tomorrow!\n🔔 Follow @puzzledaily_123 so you don't miss the reveal.\n\n",
+      "reel_hashtags": [
+        "#puzzletwister",
+        "#dailypuzzle",
+        "#brainteaser",
+        "#puzzleoftheday",
+        "#mathchallenge",
+        "#shapepuzzle",
+        "#emojimath",
+        "#braingames",
+        "#familyfun",
+        "#kidsactivities",
+        "#iqtest",
+        "#thinkfast",
+        "#reelsindia"
+      ]
+    },
+    {
+      "day": 3,
+      "type": "Word Scramble",
+      "visual": "letter_tiles",
+      "visual_data": [
+        "P",
+        "H",
+        "E",
+        "L",
+        "T",
+        "N",
+        "A",
+        "E"
+      ],
+      "question": "Unscramble the letters to find an animal.",
+      "hint": "It's the biggest animal that lives on land, and it has a trunk.",
+      "answer": "ELEPHANT",
+      "explanation": "P-H-E-L-T-N-A-E rearranges to E-L-E-P-H-A-N-T.",
+      "bonus_question": "Hidden in those same letters is a 6-letter word for the place we all live. What is it?",
+      "bonus_answer": "PLANET",
+      "caption": "Word lovers, this one's for you! Unscramble the animal, then find the hidden bonus word. First correct comment gets a shout-out!",
+      "hashtags": [
+        "#puzzletwister",
+        "#wordpuzzle",
+        "#wordgame",
+        "#scramble",
+        "#spelling",
+        "#familyfun"
+      ],
+      "reel_caption": "🧩 Puzzle Twister · Day 3: Word Scramble\n\nUnscramble the letters to find an animal.\n\n✅ Yesterday's answer: 16. Did you get it right?\n\n🧠 Bonus for experts: Hidden in those same letters is a 6-letter word for the place we all live. What is it?\n\n👇 Comment your answer. We reveal it tomorrow!\n🔔 Follow @puzzledaily_123 so you don't miss the reveal.\n\n",
+      "reel_hashtags": [
+        "#puzzletwister",
+        "#dailypuzzle",
+        "#brainteaser",
+        "#puzzleoftheday",
+        "#wordpuzzle",
+        "#wordgame",
+        "#anagram",
+        "#braingames",
+        "#familyfun",
+        "#kidsactivities",
+        "#iqtest",
+        "#thinkfast",
+        "#reelsindia"
+      ]
+    },
+    {
+      "day": 4,
+      "type": "Count the Triangles",
+      "visual": "triangle_figure",
+      "visual_data": {
+        "apex_lines": 2,
+        "cross_lines": 1
+      },
+      "question": "How many triangles can you count?",
+      "hint": "Don't forget the big ones! Count the top part first, then the whole figure.",
+      "answer": "12",
+      "explanation": "The top part (above the middle line) has 6 triangles: 3 small, 2 made of two, and 1 made of three. The whole figure also has 6 the same way. 6 + 6 = 12.",
+      "bonus_question": "How many triangles would there be with TWO cross lines instead of one?",
+      "bonus_answer": "18 (6 for each of the 3 levels)",
+      "caption": "Most people get this wrong the first time! How many triangles do YOU see? Comment your number before you swipe.",
+      "hashtags": [
+        "#puzzletwister",
+        "#countthetriangles",
+        "#visualpuzzle",
+        "#braingames",
+        "#opticalpuzzle",
+        "#brainteaser"
+      ],
+      "reel_caption": "🧩 Puzzle Twister · Day 4: Count the Triangles\n\nHow many triangles can you count?\n\n✅ Yesterday's answer: ELEPHANT. Did you get it right?\n\n🧠 Bonus for experts: How many triangles would there be with TWO cross lines instead of one?\n\n👇 Comment your answer. We reveal it tomorrow!\n🔔 Follow @puzzledaily_123 so you don't miss the reveal.\n\n",
+      "reel_hashtags": [
+        "#puzzletwister",
+        "#dailypuzzle",
+        "#brainteaser",
+        "#puzzleoftheday",
+        "#countthetriangles",
+        "#visualpuzzle",
+        "#opticalillusion",
+        "#braingames",
+        "#familyfun",
+        "#kidsactivities",
+        "#iqtest",
+        "#thinkfast",
+        "#reelsindia"
+      ]
+    },
+    {
+      "day": 5,
+      "type": "Seating Logic",
+      "visual": "bench",
+      "visual_data": {
+        "seats": 4,
+        "people": [
+          "Ana",
+          "Ben",
+          "Cara",
+          "Dev"
+        ]
+      },
+      "question": "Four friends sit on a bench. Seat 1 is on the left. Who sits where?",
+      "clues": [
+        "Dev sits at the right end.",
+        "Cara sits right next to Ana, in the next seat number up.",
+        "Ben does not sit next to Dev."
+      ],
+      "hint": "Dev is in seat 4. Now, which seats can Ana and Cara share, side by side?",
+      "answer": "Ben, Ana, Cara, Dev",
+      "explanation": "Dev is in seat 4. Ana and Cara sit together, Ana first, so they take seats 1-2 or 2-3. If they take 1-2, Ben is in seat 3, next to Dev, which breaks clue 3. So Ana and Cara take 2-3 and Ben takes seat 1.",
+      "bonus_question": "If Ben and Dev swapped seats, which clue would break?",
+      "bonus_answer": "Only clue 1 (Dev would no longer be at the right end)",
+      "caption": "Detective mode ON! Use the 3 clues to seat everyone. Write the order from left to right in the comments.",
+      "hashtags": [
+        "#puzzletwister",
+        "#logicpuzzle",
+        "#reasoning",
+        "#seatingarrangement",
+        "#detective",
+        "#braingames"
+      ],
+      "reel_caption": "🧩 Puzzle Twister · Day 5: Seating Logic\n\nFour friends sit on a bench. Seat 1 is on the left. Who sits where?\n\n✅ Yesterday's answer: 12. Did you get it right?\n\n🧠 Bonus for experts: If Ben and Dev swapped seats, which clue would break?\n\n👇 Comment your answer. We reveal it tomorrow!\n🔔 Follow @puzzledaily_123 so you don't miss the reveal.\n\n",
+      "reel_hashtags": [
+        "#puzzletwister",
+        "#dailypuzzle",
+        "#brainteaser",
+        "#puzzleoftheday",
+        "#logicpuzzle",
+        "#seatingarrangement",
+        "#reasoning",
+        "#braingames",
+        "#familyfun",
+        "#kidsactivities",
+        "#iqtest",
+        "#thinkfast",
+        "#reelsindia"
+      ]
+    },
+    {
+      "day": 6,
+      "type": "Odd One Out",
+      "visual": "number_tiles",
+      "visual_data": [
+        "16",
+        "25",
+        "36",
+        "48",
+        "64"
+      ],
+      "question": "Which number is the odd one out?",
+      "hint": "Think about 4 x 4, 5 x 5, 6 x 6 ...",
+      "answer": "48",
+      "explanation": "16, 25, 36 and 64 are square numbers (4x4, 5x5, 6x6, 8x8). 48 is not a square number.",
+      "bonus_question": "Which square number should replace 48 to keep the pattern going in order?",
+      "bonus_answer": "49 (7 x 7)",
+      "caption": "One of these numbers doesn't belong. Can you spot it AND explain why? Comment your answer!",
+      "hashtags": [
+        "#puzzletwister",
+        "#oddoneout",
+        "#numberpuzzle",
+        "#mathfun",
+        "#brainteaser",
+        "#quiz"
+      ],
+      "reel_caption": "🧩 Puzzle Twister · Day 6: Odd One Out\n\nWhich number is the odd one out?\n\n✅ Yesterday's answer: Ben, Ana, Cara, Dev. Did you get it right?\n\n🧠 Bonus for experts: Which square number should replace 48 to keep the pattern going in order?\n\n👇 Comment your answer. We reveal it tomorrow!\n🔔 Follow @puzzledaily_123 so you don't miss the reveal.\n\n",
+      "reel_hashtags": [
+        "#puzzletwister",
+        "#dailypuzzle",
+        "#brainteaser",
+        "#puzzleoftheday",
+        "#oddoneout",
+        "#numberpuzzle",
+        "#mathfun",
+        "#braingames",
+        "#familyfun",
+        "#kidsactivities",
+        "#iqtest",
+        "#thinkfast",
+        "#reelsindia"
+      ]
+    },
+    {
+      "day": 7,
+      "type": "Age Puzzle",
+      "visual": "two_people",
+      "visual_data": {
+        "left": "Rhea",
+        "right": "Brother"
+      },
+      "question": "Rhea is 15. She is 3 times as old as her brother. How old is her brother?",
+      "hint": "What number times 3 makes 15?",
+      "answer": "5",
+      "explanation": "15 / 3 = 5. Her brother is 5 years old.",
+      "bonus_question": "In how many years will Rhea be exactly twice as old as her brother?",
+      "bonus_answer": "5 years (Rhea 20, brother 10)",
+      "caption": "Family math time! The main question is quick, but the bonus makes grown-ups think. Comment both answers!",
+      "hashtags": [
+        "#puzzletwister",
+        "#agepuzzle",
+        "#mathpuzzle",
+        "#wordproblem",
+        "#familyfun",
+        "#brainteaser"
+      ],
+      "reel_caption": "🧩 Puzzle Twister · Day 7: Age Puzzle\n\nRhea is 15. She is 3 times as old as her brother. How old is her brother?\n\n✅ Yesterday's answer: 48. Did you get it right?\n\n🧠 Bonus for experts: In how many years will Rhea be exactly twice as old as her brother?\n\n👇 Comment your answer. We reveal it tomorrow!\n🔔 Follow @puzzledaily_123 so you don't miss the reveal.\n\n",
+      "reel_hashtags": [
+        "#puzzletwister",
+        "#dailypuzzle",
+        "#brainteaser",
+        "#puzzleoftheday",
+        "#agepuzzle",
+        "#wordproblem",
+        "#mathpuzzle",
+        "#braingames",
+        "#familyfun",
+        "#kidsactivities",
+        "#iqtest",
+        "#thinkfast",
+        "#reelsindia"
+      ]
+    },
+    {
+      "day": 8,
+      "type": "Magic Square",
+      "visual": "grid3",
+      "visual_data": [
+        [
+          "2",
+          "A",
+          "6"
+        ],
+        [
+          "B",
+          "5",
+          "C"
+        ],
+        [
+          "4",
+          "D",
+          "8"
+        ]
+      ],
+      "solution_grid": [
+        [
+          "2",
+          "7",
+          "6"
+        ],
+        [
+          "9",
+          "5",
+          "1"
+        ],
+        [
+          "4",
+          "3",
+          "8"
+        ]
+      ],
+      "question": "Every row and column adds up to 15. Find A, B, C and D.",
+      "hint": "Top row: 2 + A + 6 = 15. Left column: 2 + B + 4 = 15.",
+      "answer": "A = 7, B = 9, C = 1, D = 3",
+      "explanation": "Top row 2+7+6, left column 2+9+4, right column 6+1+8, bottom row 4+3+8: all 15. The diagonals add to 15 too!",
+      "bonus_question": "Add up all 9 numbers. How does that total explain why each row must be 15?",
+      "bonus_answer": "1+2+...+9 = 45. Three rows share it equally, so each row is 45 / 3 = 15.",
+      "caption": "A square full of magic! Fill in the missing letters and comment A, B, C, D. Bonus brains: explain the 15!",
+      "hashtags": [
+        "#puzzletwister",
+        "#magicsquare",
+        "#mathpuzzle",
+        "#sudokulovers",
+        "#braingames",
+        "#learning"
+      ],
+      "reel_caption": "🧩 Puzzle Twister · Day 8: Magic Square\n\nEvery row and column adds up to 15. Find A, B, C and D.\n\n✅ Yesterday's answer: 5. Did you get it right?\n\n🧠 Bonus for experts: Add up all 9 numbers. How does that total explain why each row must be 15?\n\n👇 Comment your answer. We reveal it tomorrow!\n🔔 Follow @puzzledaily_123 so you don't miss the reveal.\n\n",
+      "reel_hashtags": [
+        "#puzzletwister",
+        "#dailypuzzle",
+        "#brainteaser",
+        "#puzzleoftheday",
+        "#magicsquare",
+        "#sudoku",
+        "#mathpuzzle",
+        "#braingames",
+        "#familyfun",
+        "#kidsactivities",
+        "#iqtest",
+        "#thinkfast",
+        "#reelsindia"
+      ]
+    },
+    {
+      "day": 9,
+      "type": "Letter Pattern",
+      "visual": "letter_tiles",
+      "visual_data": [
+        "A",
+        "C",
+        "F",
+        "J",
+        "O",
+        "?"
+      ],
+      "question": "Which letter comes next?",
+      "hint": "Count how many steps you jump in the alphabet each time.",
+      "answer": "U",
+      "explanation": "The jumps grow by one: A (+2) C (+3) F (+4) J (+5) O (+6) U.",
+      "bonus_question": "Same rule, with numbers: 1, 2, 4, 7, 11, ?",
+      "bonus_answer": "16 (jumps of +1, +2, +3, +4, +5)",
+      "caption": "ABC... but not as you know it! What's the next letter? Bonus: the number version. Comment below!",
+      "hashtags": [
+        "#puzzletwister",
+        "#alphabetpuzzle",
+        "#patterns",
+        "#brainteaser",
+        "#logic",
+        "#familyfun"
+      ],
+      "reel_caption": "🧩 Puzzle Twister · Day 9: Letter Pattern\n\nWhich letter comes next?\n\n✅ Yesterday's answer: A = 7, B = 9, C = 1, D = 3. Did you get it right?\n\n🧠 Bonus for experts: Same rule, with numbers: 1, 2, 4, 7, 11, ?\n\n👇 Comment your answer. We reveal it tomorrow!\n🔔 Follow @puzzledaily_123 so you don't miss the reveal.\n\n",
+      "reel_hashtags": [
+        "#puzzletwister",
+        "#dailypuzzle",
+        "#brainteaser",
+        "#puzzleoftheday",
+        "#alphabetpuzzle",
+        "#patterns",
+        "#logic",
+        "#braingames",
+        "#familyfun",
+        "#kidsactivities",
+        "#iqtest",
+        "#thinkfast",
+        "#reelsindia"
+      ]
+    },
+    {
+      "day": 10,
+      "type": "Race Ranking",
+      "visual": "podium",
+      "visual_data": {
+        "places": 5,
+        "people": [
+          "Kiran",
+          "Leo",
+          "Maya",
+          "Noor",
+          "Omar"
+        ]
+      },
+      "question": "Five friends ran a race. In what order did they finish?",
+      "clues": [
+        "Maya finished after Noor but before Leo.",
+        "Omar finished right after Kiran.",
+        "Noor did not win."
+      ],
+      "hint": "If Noor didn't win, who could be first? Kiran and Omar must stay together.",
+      "answer": "Kiran, Omar, Noor, Maya, Leo",
+      "explanation": "The order Noor, Maya, Leo stays fixed, and the pair Kiran-Omar slots in as a block. Noor can't be first, so the Kiran-Omar block must come before Noor: Kiran 1st, Omar 2nd, Noor 3rd, Maya 4th, Leo 5th.",
+      "bonus_question": "If we removed the clue 'Noor did not win', how many finishing orders would be possible?",
+      "bonus_answer": "4",
+      "caption": "Final day of our first puzzle week! Who won the race? Write the full finishing order in the comments. Bonus is for true champions!",
+      "hashtags": [
+        "#puzzletwister",
+        "#logicpuzzle",
+        "#rankingpuzzle",
+        "#reasoning",
+        "#brainteaser",
+        "#challenge"
+      ],
+      "reel_caption": "🧩 Puzzle Twister · Day 10: Race Ranking\n\nFive friends ran a race. In what order did they finish?\n\n✅ Yesterday's answer: U. Did you get it right?\n\n🧠 Bonus for experts: If we removed the clue 'Noor did not win', how many finishing orders would be possible?\n\n👇 Comment your answer. We reveal it tomorrow!\n🔔 Follow @puzzledaily_123 so you don't miss the reveal.\n\n",
+      "reel_hashtags": [
+        "#puzzletwister",
+        "#dailypuzzle",
+        "#brainteaser",
+        "#puzzleoftheday",
+        "#logicpuzzle",
+        "#rankingpuzzle",
+        "#reasoning",
+        "#braingames",
+        "#familyfun",
+        "#kidsactivities",
+        "#iqtest",
+        "#thinkfast",
+        "#reelsindia"
+      ]
+    }
+  ],
+  "finale_caption": "🧩 Puzzle Twister · Day 10 answer\n\n✅ The finishing order was: Kiran, Omar, Noor, Maya, Leo!\n\nHow many of the 10 twisters did you solve? Tell us in the comments 👇\n🔔 Follow @puzzledaily_123 for the next batch of twisters.\n\n",
+  "finale_hashtags": [
+    "#puzzletwister",
+    "#dailypuzzle",
+    "#brainteaser",
+    "#puzzleoftheday",
+    "#logicpuzzle",
+    "#challenge",
+    "#braingames",
+    "#familyfun",
+    "#kidsactivities",
+    "#iqtest",
+    "#thinkfast",
+    "#reelsindia"
+  ]
+}
