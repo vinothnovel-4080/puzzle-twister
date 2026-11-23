@@ -83,6 +83,18 @@ def main():
             try:
                 acct = graph("GET", os.environ["IG_USER_ID"].strip(), fields="username")
                 print(f"Token OK. Will post as @{acct.get('username')}")
+                if t.startswith("EAA"):
+                    # Facebook tokens can expire in 1 hour; show expiry and permissions.
+                    try:
+                        info = graph("GET", "debug_token", input_token=t).get("data", {})
+                        exp = info.get("data_access_expires_at") if not info.get("expires_at") else info.get("expires_at")
+                        when = "never" if not exp else datetime.datetime.fromtimestamp(exp, IST).strftime("%Y-%m-%d %H:%M IST")
+                        print(f"Token type {info.get('type')}, expires: {when}")
+                        print(f"Permissions: {', '.join(info.get('scopes', []))}")
+                        if "instagram_content_publish" not in info.get("scopes", []):
+                            print("WARNING: instagram_content_publish permission is missing; posting will fail.")
+                    except SystemExit as e2:
+                        print(f"Could not read token expiry: {e2}")
             except SystemExit as e:
                 print(f"IG_USER_ID check failed: {e}")
                 # Instagram-Login tokens: the account the token belongs to.
