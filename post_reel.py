@@ -67,6 +67,14 @@ def main():
                 print(f"Token OK. Will post as @{acct.get('username')}")
             except SystemExit as e:
                 print(f"IG_USER_ID check failed: {e}")
+                # Instagram-Login tokens: the account the token belongs to.
+                if "graph.instagram.com" in os.environ.get("GRAPH_BASE", ""):
+                    try:
+                        me = graph("GET", "me", fields="user_id,username")
+                        print(f"  Token belongs to @{me.get('username')}  IG_USER_ID = {me.get('user_id')}")
+                    except SystemExit as e2:
+                        print(f"  Could not read the token's account: {e2}")
+                    raise SystemExit("Set the IG_USER_ID secret to the Instagram account ID shown above.")
                 # Facebook-Login tokens: list the Instagram business accounts linked to your Pages.
                 try:
                     pages = graph("GET", "me/accounts", fields="name,instagram_business_account{id,username}")
