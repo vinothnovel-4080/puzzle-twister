@@ -5,11 +5,15 @@ import json, os, sys, subprocess, math
 import numpy as np, soundfile as sf
 from PIL import Image, ImageDraw
 
-sys.path.insert(0, "/home/claude/puzzles")
+HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, HERE)
 import render as R
 
-OUT = "/home/claude/reels/out"
-TMP = "/home/claude/reels/tmp"
+# All paths can be overridden with env vars (the GitHub Actions workflow sets them).
+OUT = os.environ.get("REELS_OUT", os.path.join(HERE, "out", "reels"))
+TMP = os.environ.get("REELS_TMP", os.path.join(HERE, "tmp"))
+MODELS = os.environ.get("KOKORO_DIR", os.path.join(HERE, "models"))
+PUZZLES = os.path.join(HERE, "puzzles.json")
 os.makedirs(OUT, exist_ok=True); os.makedirs(TMP, exist_ok=True)
 RW, RH, FPS, TOTAL = 1080, 1920, 30, 15.0
 SR = 44100
@@ -44,7 +48,7 @@ def tts(text, speed):
     global _k
     if _k is None:
         from kokoro_onnx import Kokoro
-        _k = Kokoro("/home/claude/tts_models/kokoro-v1.0.onnx", "/home/claude/tts_models/voices-v1.0.bin")
+        _k = Kokoro(os.path.join(MODELS, "kokoro-v1.0.onnx"), os.path.join(MODELS, "voices-v1.0.bin"))
     a, sr = _k.create(text, voice=VOICE, speed=speed, lang="en-us")
     # resample 24k -> 44.1k
     n = int(len(a) * SR / sr)
@@ -202,7 +206,7 @@ def encode(day, imgs, audio, pl):
 def main():
     mode = sys.argv[1] if len(sys.argv) > 1 else "all"
     days = [int(x) for x in sys.argv[2:]] or list(range(1, 11))
-    data = json.load(open("/home/claude/puzzles/puzzles.json"))
+    data = json.load(open(PUZZLES, encoding="utf-8"))
     brand = data["brand"]
     for day in days:
         p = data["puzzles"][day - 1]

@@ -6,7 +6,7 @@ from PIL import Image, ImageDraw, ImageFont
 
 W, H = 1080, 1350
 HERE = os.path.dirname(os.path.abspath(__file__))
-F = "/usr/share/fonts/truetype/google-fonts/"
+F = os.path.join(os.environ.get("FONT_DIR", "/usr/share/fonts/truetype/google-fonts"), "")
 BOLD = F + "Poppins-Bold.ttf"
 SEMI = F + "Poppins-Medium.ttf"
 REG = F + "Poppins-Regular.ttf" if os.path.exists(F + "Poppins-Regular.ttf") else BOLD
@@ -281,7 +281,7 @@ def slide_answer(brand, p, accent):
 
 
 def main():
-    data = json.load(open(os.path.join(HERE, "puzzles.json")))
+    data = json.load(open(os.path.join(HERE, "puzzles.json"), encoding="utf-8"))
     brand = data["brand"]
     for p in data["puzzles"]:
         accent = ACCENTS[(p["day"] - 1) % len(ACCENTS)]

@@ -206,7 +206,7 @@ def encode(day, paths, audio, pl):
 def main():
     mode = sys.argv[1] if len(sys.argv) > 1 else "all"
     days = [int(x) for x in sys.argv[2:]] or list(range(1, 12))
-    data = json.load(open("/home/claude/puzzles/puzzles.json"))
+    data = json.load(open(B.PUZZLES, encoding="utf-8"))
     for day in days:
         pl = plan(day)
         paths = frames(day, data)

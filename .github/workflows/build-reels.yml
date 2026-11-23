@@ -1,0 +1,104 @@
+name: Build reels
+
+# Makes all 11 reels (plus the carousel slides) on GitHub's servers and publishes
+# them to GitHub Pages, so Instagram can download them from a public link:
+#   https://<user>.github.io/<repo>/reels/puzzle_twister_dayNN_reel.mp4
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - puzzles.json
+      - render.py
+      - reels.py
+      - reels2.py
+      - .github/workflows/build-reels.yml
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      FONT_DIR: ${{ github.workspace }}/fonts
+      KOKORO_DIR: ${{ github.workspace }}/models
+      REELS_OUT: ${{ github.workspace }}/site/reels
+      REELS_TMP: ${{ github.workspace }}/tmp
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install ffmpeg
+        run: sudo apt-get update -q && sudo apt-get install -y -q ffmpeg
+
+      - name: Install Python packages
+        run: pip install pillow numpy soundfile kokoro-onnx
+
+      - name: Download Poppins fonts
+        run: |
+          mkdir -p "$FONT_DIR"
+          for f in Bold Medium Regular; do
+            curl -fsSL -o "$FONT_DIR/Poppins-$f.ttf" "https://github.com/google/fonts/raw/main/ofl/poppins/Poppins-$f.ttf"
+          done
+
+      - name: Cache Kokoro voice model
+        uses: actions/cache@v4
+        with:
+          path: models
+          key: kokoro-v1.0
+
+      - name: Download Kokoro voice model
+        run: |
+          mkdir -p "$KOKORO_DIR"
+          base=https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0
+          [ -f "$KOKORO_DIR/kokoro-v1.0.onnx" ] || curl -fsSL -o "$KOKORO_DIR/kokoro-v1.0.onnx" "$base/kokoro-v1.0.onnx"
+          [ -f "$KOKORO_DIR/voices-v1.0.bin" ]  || curl -fsSL -o "$KOKORO_DIR/voices-v1.0.bin"  "$base/voices-v1.0.bin"
+
+      - name: Check puzzles
+        run: python verify.py
+
+      - name: Render carousel slides
+        run: python render.py
+
+      - name: Build reels
+        run: |
+          mkdir -p "$REELS_OUT" "$REELS_TMP"
+          python reels2.py all
+          ls -la "$REELS_OUT"
+          test "$(ls "$REELS_OUT"/*.mp4 | wc -l)" -eq 11
+
+      - name: Assemble site
+        run: |
+          mkdir -p site/slides
+          cp -r out/day_* site/slides/
+          {
+            echo '<!doctype html><meta charset="utf-8"><title>Puzzle Twister reels</title>'
+            echo '<h1>Puzzle Twister reels</h1><ul>'
+            for f in site/reels/*.mp4; do n=$(basename "$f"); echo "<li><a href=\"reels/$n\">$n</a></li>"; done
+            echo '</ul>'
+          } > site/index.html
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

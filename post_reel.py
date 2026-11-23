@@ -13,7 +13,9 @@ Usage:
 """
 import json, os, sys, time, datetime, urllib.parse, urllib.request
 
-START_DATE = datetime.date(2026, 11, 22)   # Day 1, posted 8:00 am IST
+# Day 1, posted 8:00 am IST. Override with the START_DATE env var (YYYY-MM-DD),
+# which the GitHub workflow reads from the repository variable of the same name.
+START_DATE = datetime.date.fromisoformat(os.environ.get("START_DATE") or "2026-11-22")
 IST = datetime.timezone(datetime.timedelta(hours=5, minutes=30))
 HERE = os.path.dirname(os.path.abspath(__file__))
 
@@ -34,7 +36,7 @@ def graph(method, path, **params):
 
 
 def post_for_day(day):
-    d = json.load(open(os.path.join(HERE, "puzzles.json")))
+    d = json.load(open(os.path.join(HERE, "puzzles.json"), encoding="utf-8"))
     if day == 11:
         caption = d["finale_caption"] + " ".join(d["finale_hashtags"])
         video = "puzzle_twister_day10_answer_reel.mp4"
@@ -58,6 +60,12 @@ def main():
     print(f"Day {day}\nVideo: {url}\nCaption:\n{caption}\n")
     if "--dry-run" in args:
         return
+    # Instagram must be able to download the video, so check the link first.
+    try:
+        with urllib.request.urlopen(urllib.request.Request(url, method="HEAD"), timeout=30) as r:
+            print(f"Video reachable ({r.status}, {r.headers.get('Content-Length')} bytes)")
+    except Exception as e:
+        raise SystemExit(f"Video URL not reachable: {url} ({e}). Run the 'Build reels' workflow first.")
     ig = os.environ["IG_USER_ID"]
     c = graph("POST", f"{ig}/media", media_type="REELS", video_url=url, caption=caption, share_to_feed="true")
     cid = c["id"]

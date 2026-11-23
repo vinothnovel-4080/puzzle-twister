@@ -1,5 +1,7 @@
 # Puzzle Twister: source code
 
+Everything runs on GitHub. Nothing needs to be installed on your computer.
+
 | File | What it does |
 |---|---|
 | `puzzles.json` | All 10 puzzles: question, clues, hint, answer, explanation, bonus, captions and hashtags. Edit this to make a new batch. |
@@ -8,31 +10,31 @@
 | `reels.py` | Shared helpers for reels: English voiceover (Kokoro TTS), generated background music, sound effects. |
 | `reels2.py` | Builds the 15-second vertical reels: yesterday's answer, then today's puzzle, a 3-2-1 countdown and "Answer tomorrow". |
 | `post_reel.py` | Posts the day's reel to Instagram through the Graph API (create container, wait, publish). |
+| `.github/workflows/build-reels.yml` | **Build reels**: makes all 11 reels and the slides, then publishes them on GitHub Pages. Runs when puzzles or scripts change, or by hand. |
+| `.github/workflows/post-reel.yml` | **Post reel to Instagram**: runs every day at 8:00 am IST and posts that day's reel. Can also be run by hand for any day. |
 
-## Setup
-```
-pip install pillow numpy soundfile kokoro-onnx
-# ffmpeg must be installed
-# Kokoro voice files (put next to the scripts, or edit the paths in reels.py):
-#   https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/kokoro-v1.0.onnx
-#   https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/voices-v1.0.bin
-```
-The scripts use paths under `/home/claude/...`; change these at the top of each file to match your folders.
+## One-time setup (on github.com)
 
-## Run
-```
-python3 verify.py          # check the puzzles
-python3 render.py          # carousel slides
-python3 reels2.py all      # all 11 reels (day 11 = Day 10 answer reel)
-```
+1. **Turn on Pages:** Settings → Pages → *Build and deployment* → Source: **GitHub Actions**.
+2. **Add the Instagram secrets:** Settings → Secrets and variables → Actions → *Secrets* tab → New repository secret:
+   - `INSTAGRAM_ACCESS_TOKEN`: long-lived token with `instagram_basic` + `instagram_content_publish`
+   - `IG_USER_ID`: numeric Instagram Business Account ID
+3. **Set the start date (optional):** same page, *Variables* tab → New repository variable `START_DATE` = the date of Day 1, e.g. `2026-11-24`. Without it, Day 1 is 2026-11-22.
+   - Optional variable `GRAPH_BASE` = `https://graph.instagram.com/v24.0` if your token comes from *Instagram Login* rather than Facebook Login.
+4. **Build the reels:** Actions → *Build reels* → Run workflow. Takes about 10-15 minutes. The reels then appear at
+   `https://vinothnovel-4080.github.io/puzzle-twister/`.
+5. **Test the post:** Actions → *Post reel to Instagram* → Run workflow, tick *dry run*. Check the log shows the right day, video link and caption.
 
-## Post to Instagram
+After that, the daily post runs by itself at 8:00 am IST for the 11 days of the series.
+
+## Posting a day by hand
+Actions → *Post reel to Instagram* → Run workflow → enter the day (1-11; 11 = Day 10 answer reel).
+
+## Running on your own computer (optional)
 ```
-export INSTAGRAM_ACCESS_TOKEN=...   # instagram_basic + instagram_content_publish
-export IG_USER_ID=...               # numeric Instagram Business Account ID
-export MEDIA_BASE_URL=https://vinothnovel-4080.github.io/puzzle-twister
-python3 post_reel.py --dry-run      # preview today's post
-python3 post_reel.py                # publish today's reel
-python3 post_reel.py --day 3        # publish a specific day
+pip install pillow numpy soundfile kokoro-onnx   # plus ffmpeg
+# put kokoro-v1.0.onnx and voices-v1.0.bin in models/, Poppins fonts in a folder and set FONT_DIR
+python verify.py
+python render.py
+python reels2.py all
 ```
-`START_DATE` in `post_reel.py` sets which date is Day 1.
