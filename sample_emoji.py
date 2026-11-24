@@ -135,23 +135,23 @@ def cover():
     R.ctext(d, CW / 2, 420, "EMOJI PUZZLE", R.font(R.BOLD, 120), ACC)
     R.ctext(d, CW / 2, 545, "GUESS THE WORD", R.font(R.BOLD, 52), R.WHITE)
     d.rounded_rectangle([80, 640, CW - 80, 1330], radius=40, fill=R.BG, outline=ACC, width=10)
-    emoji_row(img, 985, 230, R.INK)
+    emoji_row(img, 985, 175, R.INK)
     R.ctext(d, CW / 2, 1460, "CAN YOU GET IT IN 10s?", R.font(R.BOLD, 60), R.WHITE)
     return img
 
 
 # ---------------- audio + video ----------------
 def plan():
+    """1.5 s title, then a full 10 s countdown (the hook voice plays over its start),
+    then the end card for as long as the closing line needs."""
     v_hook, v_end = B.tts(VO_HOOK, B.SPEED), B.tts(VO_END, B.SPEED)
-    A = max(3.0, len(v_hook) / SR + 0.5)
-    C = max(3.0, len(v_end) / SR + 0.6)
-    N = max(5, min(10, int(TOTAL - A - C)))
-    C = TOTAL - A - N
-    return dict(v_hook=v_hook, v_end=v_end, A=A, N=N, C=C)
+    A, N = 1.5, 10
+    C = max(3.5, len(v_end) / SR + 0.7)
+    return dict(v_hook=v_hook, v_end=v_end, A=A, N=N, C=C, total=A + N + C)
 
 
 def mix(pl, path):
-    n = int(TOTAL * SR)
+    n = int(pl["total"] * SR)
     m = B.music(3)
     m = (np.pad(m, (0, max(0, n - len(m))))[:n]) / np.max(np.abs(m)) * 0.30
     vo = np.zeros(n, np.float32)
@@ -170,7 +170,7 @@ def mix(pl, path):
     sf.write(path, out, SR)
 
 
-def encode(segs, audio, path):
+def encode(segs, audio, path, total):
     cmd = ["ffmpeg", "-y", "-v", "error"]
     for p, _ in segs:
         cmd += ["-framerate", str(FPS), "-i", p]
@@ -179,10 +179,10 @@ def encode(segs, audio, path):
     fc = [f"[{i}]format=yuv420p,loop=-1:1,trim=duration={d:.3f},setpts=PTS-STARTPTS,fps=30,settb=1/30[v{i}]"
           for i, (_, d) in enumerate(segs)]
     fc.append("".join(f"[v{i}]" for i in range(len(segs))) + f"concat=n={len(segs)}:v=1:a=0,fps=30,settb=1/30[vid]")
-    fc.append(f"[vid][{ai + 1}]overlay=x='-w+w*t/{TOTAL}':y=0:shortest=1,format=yuv420p[outv]")
+    fc.append(f"[vid][{ai + 1}]overlay=x='-w+w*t/{total:.3f}':y=0:shortest=1,format=yuv420p[outv]")
     cmd += ["-filter_complex", ";".join(fc), "-map", "[outv]", "-map", f"{ai}:a",
             "-c:v", "libx264", "-preset", "veryfast", "-crf", "20", "-pix_fmt", "yuv420p",
-            "-c:a", "aac", "-b:a", "160k", "-t", f"{TOTAL}", "-movflags", "+faststart", path]
+            "-c:a", "aac", "-b:a", "160k", "-t", f"{total:.3f}", "-movflags", "+faststart", path]
     subprocess.run(cmd, check=True)
 
 
@@ -204,14 +204,15 @@ def main():
     segs.append((p, pl["C"]))
     audio = os.path.join(tmp, "mix.wav")
     mix(pl, audio)
-    encode(segs, audio, os.path.join(OUT, "emoji_sample_reel.mp4"))
+    encode(segs, audio, os.path.join(OUT, "emoji_sample_reel.mp4"), pl["total"])
     cover().save(os.path.join(OUT, "emoji_sample_cover.jpg"), "JPEG", quality=90)
     with open(os.path.join(OUT, "caption.txt"), "w", encoding="utf-8") as f:
         f.write(CAPTION + " ".join(HASHTAGS) + "\n")
     with open(os.path.join(OUT, "voice.txt"), "w", encoding="utf-8") as f:
-        f.write(f"0.0s  {VO_HOOK}\n{pl['A'] + pl['N']:.1f}s  {VO_END}\n"
-                f"Timing: hook {pl['A']:.1f}s, countdown {pl['N']}s, end card {pl['C']:.1f}s\n")
-    print(f"Sample built: hook {pl['A']:.1f}s, countdown {pl['N']}s, end {pl['C']:.1f}s -> {OUT}")
+        f.write(f"0.3s  {VO_HOOK}\n{pl['A'] + pl['N'] + 0.3:.1f}s  {VO_END}\n"
+                f"Timing: title {pl['A']:.1f}s, countdown {pl['N']}s, end card {pl['C']:.1f}s, "
+                f"total {pl['total']:.1f}s\n")
+    print(f"Sample built: title {pl['A']:.1f}s, countdown {pl['N']}s, end {pl['C']:.1f}s -> {OUT}")
 
 
 if __name__ == "__main__":
