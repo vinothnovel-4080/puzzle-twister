@@ -15,6 +15,7 @@ on:
       - trend.py
       - trends.json
       - trends_common.py
+      - psych_samples.py
       - .github/workflows/build-reels.yml
 
 permissions:
@@ -116,6 +117,13 @@ jobs:
           ls -la "$EMOJI_FONT"
           python trend.py
           ls "$TREND_OUT"/*.mp4 | wc -l
+
+      - name: Build psychology samples (not scheduled)
+        continue-on-error: true
+        env:
+          EMOJI_FONT: ${{ github.workspace }}/fonts/NotoColorEmoji.ttf
+          PSYCH_OUT: ${{ github.workspace }}/site/samples/psych
+        run: python psych_samples.py
 
       - name: Assemble site
         run: |
