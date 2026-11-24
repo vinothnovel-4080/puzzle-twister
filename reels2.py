@@ -25,6 +25,7 @@ PUZZLE_VO = {
     9: "Day nine! A, C, F, J, O. Which letter comes next?",
     10: "Day ten! Five friends ran a race. Use the clues to find the finishing order.",
 }
+WELCOME = "Welcome to Puzzle Twister! "   # every reel opens with this (Day 1's puzzle line has it already)
 ANSWER_VO = {
     1: "Yesterday's answer: forty-two! The gaps grow by two.",
     2: "Yesterday's answer: sixteen! Circle ten, triangle four, square two.",
@@ -46,12 +47,12 @@ def plan(day):
     speed = B.SPEED
     while True:
         if day == 11:
-            v_prev = B.tts(ANSWER_VO[10].replace("Yesterday's", "Day ten"), speed)
+            v_prev = B.tts(WELCOME + ANSWER_VO[10].replace("Yesterday's", "Day ten"), speed)
             v_end = B.tts(FINALE_VO, speed)
             P1 = 0.3 + len(v_prev) / SR + 0.8
             P4 = len(v_end) / SR + 0.9
             return dict(v_prev=v_prev, v_end=v_end, P1=P1, P4=P4, total=P1 + P4 - XF, speed=speed)
-        v_prev = B.tts(ANSWER_VO[day - 1], speed) if day > 1 else None
+        v_prev = B.tts(WELCOME + ANSWER_VO[day - 1], speed) if day > 1 else None
         v_a = B.tts(PUZZLE_VO[day], speed)
         v_end = B.tts(END_VO, speed)
         P1 = (0.3 + len(v_prev) / SR + 0.5) if v_prev is not None else 0.0
@@ -111,8 +112,9 @@ def frames(day, data):
         pp = P[prev - 1]
         acc = R.ACCENTS[(prev - 1) % len(R.ACCENTS)]
         def top_r(d, acc=acc, prev=prev):
-            R.ctext(d, RW / 2, 105, "DAY %d" % prev if day == 11 else "YESTERDAY'S", R.font(R.BOLD, 56), R.WHITE)
-            R.ctext(d, RW / 2, 195, "ANSWER", R.font(R.BOLD, 96), acc)
+            R.ctext(d, RW / 2, 80, "WELCOME TO PUZZLE TWISTER", R.font(R.BOLD, 48), R.WHITE)
+            R.ctext(d, RW / 2, 190, "DAY %d ANSWER" % prev if day == 11 else "YESTERDAY'S ANSWER",
+                    R.font(R.BOLD, 76), acc)
         imgs["reveal"] = canvas(R.slide_answer(brand, pp, acc), top_r, "DID YOU GET IT RIGHT?")
     if day == 11:
         acc = R.ACCENTS[0]

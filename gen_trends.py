@@ -3,7 +3,8 @@
 Rotation (from day 11):
 Slot 1: emoji word -> spot the difference -> count challenge -> odd-one grid
 Slot 2: quick maths trap (answer computed, wrong options = common mistakes) <-> memory test
-Slot 3: Stroop test -> riddle -> first word you see -> riddle
+Slot 3: riddle -> riddle -> number sequence -> riddle
+        (with PSYCH = True: Stroop test -> riddle -> first word you see -> riddle)
 (number sequences fill in once the riddle bank runs out)
 
 Every new post is checked before it is written; any failed check stops the run.
@@ -13,6 +14,7 @@ import json, os, random, sys
 import trends_common as T
 
 DAYS_AHEAD = 10
+PSYCH = False  # Stroop and "first word you see" in slot 3; on hold for now
 
 # ---- hand-checked banks: (emojis, caption form, answer). Single code points only (no ZWJ). ----
 EMOJI_WORDS = [
@@ -313,7 +315,8 @@ def main():
     # Rotation from day 11 (5 Dec): interactive formats in every slot.
     S1 = [emoji_word, make_spot_diff, make_count, odd_grid]
     S2 = [math_trap, make_memory]
-    S3 = [make_stroop, riddle, first_word, riddle]
+    # Psychology formats (Stroop, first word) are on hold: set PSYCH = True to bring them back.
+    S3 = [make_stroop, riddle, first_word, riddle] if PSYCH else [riddle, riddle, make_sequence, riddle]
     for day in range(last_day + 1, target + 1):
         rng = random.Random(f"puzzle-twister-{day}")
         i = day - 11

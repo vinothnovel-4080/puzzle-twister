@@ -297,11 +297,33 @@ def frame(p, acc, top_fn, bottom, panel, timer=None):
     return img
 
 
+def spoken_answer(p):
+    """Yesterday's answer as the voice should say it (None when there isn't a short one)."""
+    k = p["kind"]
+    if k == "emoji_word":
+        return p["answer"].capitalize()
+    if k == "odd_grid":
+        return f"row {p['odd_row']}, column {p['odd_col']}"
+    if k == "spot_diff":
+        return f"{p['diffs']} differences"
+    if k == "count_emoji":
+        return f"{p['count']} {p['target']}"
+    if k == "memory":
+        return p["answer_letter"]
+    if p.get("choices"):
+        text = p["choices"]["ABC".index(p["answer_letter"])].replace("₹", "") + (" rupees" if "₹" in str(p["choices"]) else "")
+        return f"{p['answer_letter']}, {text}"
+    return None
+
+
 def top_title(p, acc, prev):
-    l1, l2 = TOP[p["kind"]]
+    l1 = TOP[p["kind"]][0]
     def f(d):
-        R.ctext(d, RW / 2, 95, l1, R.font(R.BOLD, 56), R.WHITE)
-        R.ctext(d, RW / 2, 185, l2, R.font(R.BOLD, 84), acc)
+        R.ctext(d, RW / 2, 80, "WELCOME TO PUZZLE TWISTER", R.font(R.BOLD, 46), R.WHITE)
+        size = 80
+        while d.textlength(l1, font=R.font(R.BOLD, size)) > RW - 100:
+            size -= 4
+        R.ctext(d, RW / 2, 178, l1, R.font(R.BOLD, size), acc)
         if prev:
             text = f"Yesterday's answer: {T.short_answer(prev)}"
             size = 32
@@ -368,7 +390,7 @@ def mix(pl, path, seed):
     m = np.pad(m, (0, max(0, n - len(m))))[:n] / np.max(np.abs(m)) * 0.30
     vo = np.zeros(n, np.float32)
     sfx = np.zeros(n, np.float32)
-    B.add(vo, pl["v_hook"] / np.max(np.abs(pl["v_hook"])), 0.25)
+    B.add(vo, pl["v_hook"] / np.max(np.abs(pl["v_hook"])), pl.get("hook_at", 0.25))
     for i in range(pl["N"]):
         left = pl["N"] - i
         B.add(sfx, (0.45 if left <= 3 else 0.2) * B.tick(), pl["A"] + i)
@@ -408,22 +430,24 @@ def build(data, p):
     tmp = os.path.join(B.TMP, stem)
     os.makedirs(tmp, exist_ok=True)
     hook, end = vo_lines(p)
-    v_hook, v_end = B.tts(hook, B.SPEED), B.tts(end, B.SPEED)
-    A = 1.5
-    N = max(10, math.ceil(len(v_hook) / SR + 0.6 - A))   # long riddles get a longer countdown
+    prev = T.find(data, p["day"] - 1, p["slot"])
+    said = spoken_answer(prev) if prev else None
+    intro = "Welcome to Puzzle Twister!" + (f" Yesterday's answer was {said}." if said else "")
+    v_intro, v_hook, v_end = B.tts(intro, B.SPEED), B.tts(hook, B.SPEED), B.tts(end, B.SPEED)
+    A = max(1.5, len(v_intro) / SR + 0.5)               # welcome screen lasts as long as the intro
+    N = max(10, math.ceil(len(v_hook) / SR + 0.6))       # long riddles get a longer countdown
     C = max(3.5, len(v_end) / SR + 0.7)
     opts = T.has_options(p)
     memory = p["kind"] == "memory"
-    pl = dict(v_hook=v_hook, v_end=v_end, A=A, N=N, C=C, total=A + N + C,
-              options_at=(A + N - 3) if opts else None)
+    pl = dict(v_hook=v_hook, v_end=v_end, A=A, N=N, C=C, total=A + N + C, hook_at=A + 0.1,
+              options_at=(A + N - 3) if opts else None, extra=[(v_intro, 0.25)])
     show, ask = dict(p, _phase="show"), dict(p, _phase="ask")
     if memory:
         # 5 s to memorise, then the grid is hidden and the question + emoji options appear
         N = pl["N"] = 10
         pl["total"] = A + N + C
         pl["options_at"] = A + 5
-        pl["extra"] = [(B.tts(p["question"] + " A, B, or C?", B.SPEED), A + 5.2)]
-    prev = T.find(data, p["day"] - 1, p["slot"])
+        pl["extra"].append((B.tts(p["question"] + " A, B, or C?", B.SPEED), A + 5.2))
     bottom = f"PUZZLE TWISTER  ·  #{p['id']}"
     segs = []
     title_panel = panel_comment if memory else (panel_teaser if opts else panel_comment)
@@ -450,7 +474,8 @@ def build(data, p):
     if opts:
         Image.open(os.path.join(tmp, "count_02.png")).save(os.path.join(OUT, stem + "_options.png"))
     with open(os.path.join(OUT, stem + ".txt"), "w", encoding="utf-8") as f:
-        f.write(T.caption(data, p) + "\n\n--- voice ---\n" + f"0.3s  {hook}\n{A + N + 0.3:.1f}s  {end}\n")
+        f.write(T.caption(data, p) + "\n\n--- voice ---\n"
+                + f"0.3s  {intro}\n{A + 0.1:.1f}s  {hook}\n{A + N + 0.3:.1f}s  {end}\n")
     print(f"#{p['id']} {stem}: {p['kind']}, countdown {N}s, total {pl['total']:.1f}s")
 
 
