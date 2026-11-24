@@ -7,7 +7,7 @@
     {"id": 3, "day": 1, "slot": 3, "kind": "riddle", "question": "When I was 6, my sister was half my age. Now I'm 40. How old is my sister?", "choices": ["20", "37", "34"], "answer_letter": "B"},
 
     {"id": 4, "day": 2, "slot": 1, "kind": "odd_grid", "base": "😀", "odd": "😃", "emoji": true, "name": "face", "rows": 6, "cols": 6, "odd_row": 3, "odd_col": 5},
-    {"id": 5, "day": 2, "slot": 2, "kind": "matchstick", "expr": "6+4=4", "choices": ["0 + 4 = 4", "6 + 4 = 10", "5 + 4 = 9"], "answer_letter": "A"},
+    {"id": 5, "day": 2, "slot": 2, "kind": "math", "expr": "20 ÷ 4 + 6 × 2 = ?", "choices": ["22", "17", "32"], "answer_letter": "B"},
     {"id": 6, "day": 2, "slot": 3, "kind": "riddle", "question": "A bat and a ball cost ₹110 together. The bat costs ₹100 more than the ball. How much is the ball?", "choices": ["₹10", "₹15", "₹5"], "answer_letter": "C"},
 
     {"id": 7, "day": 3, "slot": 1, "kind": "emoji_word", "emojis": ["⭐", "🐟"], "caption_emojis": "⭐ + 🐟", "answer": "STARFISH"},
@@ -15,7 +15,7 @@
     {"id": 9, "day": 3, "slot": 3, "kind": "riddle", "question": "2 cats catch 2 mice in 2 minutes. How many cats catch 10 mice in 10 minutes?", "choices": ["2", "10", "5"], "answer_letter": "A"},
 
     {"id": 10, "day": 4, "slot": 1, "kind": "odd_grid", "base": "O", "odd": "Q", "emoji": false, "name": "letter", "rows": 6, "cols": 6, "odd_row": 5, "odd_col": 2},
-    {"id": 11, "day": 4, "slot": 2, "kind": "matchstick", "expr": "5+7=2", "choices": ["9 - 7 = 2", "6 + 7 = 13", "5 - 3 = 2"], "answer_letter": "A"},
+    {"id": 11, "day": 4, "slot": 2, "kind": "math", "expr": "12 ÷ 3 × 2 = ?", "choices": ["2", "6", "8"], "answer_letter": "C"},
     {"id": 12, "day": 4, "slot": 3, "kind": "riddle", "question": "What comes next? 1, 1, 2, 3, 5, 8, ...", "choices": ["13", "11", "12"], "answer_letter": "A"},
 
     {"id": 13, "day": 5, "slot": 1, "kind": "emoji_word", "emojis": ["✋", "👜"], "caption_emojis": "✋ + 👜", "answer": "HANDBAG"},

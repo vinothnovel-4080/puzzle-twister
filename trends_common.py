@@ -8,14 +8,12 @@ LABEL = {
     "emoji_word": "Emoji puzzle",
     "odd_grid": "Find the odd one",
     "math": "Quick maths",
-    "matchstick": "Matchstick puzzle",
     "riddle": "Riddle",
 }
 HASHTAGS = {
     "emoji_word": ["#puzzletwister", "#emojipuzzle", "#guesstheword", "#emojiquiz", "#brainteaser"],
     "odd_grid": ["#puzzletwister", "#findtheoddone", "#spotthedifference", "#visualpuzzle", "#brainteaser"],
     "math": ["#puzzletwister", "#mathpuzzle", "#quickmaths", "#mathchallenge", "#brainteaser"],
-    "matchstick": ["#puzzletwister", "#matchstickpuzzle", "#mathpuzzle", "#logicpuzzle", "#brainteaser"],
     "riddle": ["#puzzletwister", "#riddle", "#riddles", "#logicpuzzle", "#brainteaser"],
 }
 FOLLOW = "🔔 Follow @puzzledaily_123 for new puzzles every day."
@@ -74,10 +72,6 @@ def caption(data, p):
     elif k == "math":
         head = f"Quick maths #{n} 🧮 Most people get this wrong at first!\n\n{p['expr'].replace('-', '−')}\n\n{opts}"
         ask = "💬 Comment A, B or C. Answer tomorrow!\n📤 Send this to the friend who says they're good at maths.\n"
-    elif k == "matchstick":
-        head = (f"Matchstick puzzle #{n} 🔥 Move just ONE matchstick to fix it!\n\n"
-                f"{p['expr'].replace('+', ' + ').replace('-', ' − ').replace('=', ' = ')} ❌\n\n{opts}")
-        ask = "💬 Comment A, B or C. Found another answer? Tell us!\n📤 Send this to a friend who loves a challenge.\n"
     else:
         head = f"Riddle #{n} 🤔 Think before you answer!\n\n{p['question']}\n\n{opts}"
         ask = "💬 Comment A, B or C. Answer tomorrow!\n📤 Send this to someone who loves riddles.\n"

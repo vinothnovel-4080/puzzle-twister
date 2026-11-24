@@ -1,7 +1,7 @@
 """Render the trend series (trends.json): one reel + cover + caption per post.
 
-Styles: emoji_word and odd_grid (no options, "comment your answer"), and math,
-matchstick and riddle (A/B/C options appear when the countdown reaches 3).
+Styles: emoji_word and odd_grid (no options, "comment your answer"), and math
+and riddle (A/B/C options appear when the countdown reaches 3).
 
 Reel: 1.5 s title -> 10 s countdown with timer bar (hook voice over it) -> end card.
 Env: TREND_OUT (output folder), EMOJI_FONT, plus FONT_DIR / KOKORO_DIR / REELS_TMP.
@@ -21,10 +21,9 @@ RW, RH, FPS, SR = B.RW, B.RH, B.FPS, B.SR
 LANCZOS = getattr(Image, "Resampling", Image).LANCZOS
 
 ACCENT = {"emoji_word": R.ACCENTS[3], "odd_grid": R.ACCENTS[2], "math": R.ACCENTS[1],
-          "matchstick": R.ACCENTS[0], "riddle": R.ACCENTS[4]}
+          "riddle": R.ACCENTS[4]}
 TOP = {"emoji_word": ("EMOJI PUZZLE", "GUESS THE WORD"), "odd_grid": ("FIND THE ODD ONE", "IN 10 SECONDS"),
-       "math": ("QUICK MATHS", "CAN YOU SOLVE IT?"), "matchstick": ("MATCHSTICK PUZZLE", "MOVE 1 STICK"),
-       "riddle": ("RIDDLE", "THINK FIRST!")}
+       "math": ("QUICK MATHS", "CAN YOU SOLVE IT?"), "riddle": ("RIDDLE", "THINK FIRST!")}
 VO_END_OPTIONS = "Comment A, B, or C, and send this to a friend. Answer tomorrow!"
 
 
@@ -38,8 +37,6 @@ def vo_lines(p):
                 "Comment the row and column, and send this to a friend. Answer tomorrow!")
     if k == "math":
         return ("Quick maths! What's the answer? Options appear at three.", VO_END_OPTIONS)
-    if k == "matchstick":
-        return ("Move just one matchstick to fix the equation! Options appear at three.", VO_END_OPTIONS)
     return (p["question"].replace("₹", " rupees ") + " Options appear at three.", VO_END_OPTIONS)
 
 
@@ -130,50 +127,6 @@ def draw_math(img, p, acc):
     R.ctext(d, RW / 2, 930, "Most people get this wrong.", R.font(R.SEMI, 44), R.MUTED)
 
 
-SEG = {"0": "abcdef", "1": "bc", "2": "abdeg", "3": "abcdg", "4": "bcfg", "5": "acdfg",
-       "6": "acdefg", "7": "abc", "8": "abcdefg", "9": "abcdfg"}
-WOOD, WOOD_EDGE, HEAD = (232, 190, 122), (176, 128, 64), (205, 45, 45)
-
-
-def stick(d, x1, y1, x2, y2, t):
-    d.line([(x1, y1), (x2, y2)], fill=WOOD_EDGE, width=t + 6)
-    d.line([(x1, y1), (x2, y2)], fill=WOOD, width=t)
-    r = t * 0.85
-    d.ellipse([x1 - r, y1 - r, x1 + r, y1 + r], fill=HEAD)
-
-
-def draw_matchstick(img, p, acc):
-    d = ImageDraw.Draw(img)
-    h, t = 220, 15
-    w, opw, gap, m = h * 0.55, h * 0.42, h * 0.2, 12
-    tokens = list(p["expr"])
-    total = sum(w if ch.isdigit() else opw for ch in tokens) + gap * (len(tokens) - 1)
-    x, y = (RW - total) / 2, 720 - h / 2
-    for ch in tokens:
-        if ch.isdigit():
-            pts = {"a": (x, y, x + w, y), "b": (x + w, y, x + w, y + h / 2), "c": (x + w, y + h / 2, x + w, y + h),
-                   "d": (x, y + h, x + w, y + h), "e": (x, y + h / 2, x, y + h), "f": (x, y, x, y + h / 2),
-                   "g": (x, y + h / 2, x + w, y + h / 2)}
-            for s in SEG[ch]:
-                x1, y1, x2, y2 = pts[s]
-                if x1 == x2:
-                    stick(d, x1, y1 + m, x2, y2 - m, t)
-                else:
-                    stick(d, x1 + m, y1, x2 - m, y2, t)
-            x += w + gap
-        else:
-            cx, cy = x + opw / 2, y + h / 2
-            if ch in "+-":
-                stick(d, cx - opw / 2 + 4, cy, cx + opw / 2 - 4, cy, t)
-            if ch == "+":
-                stick(d, cx, cy - opw / 2 + 4, cx, cy + opw / 2 - 4, t)
-            if ch == "=":
-                for dy in (-h * 0.12, h * 0.12):
-                    stick(d, cx - opw / 2 + 4, cy + dy, cx + opw / 2 - 4, cy + dy, t)
-            x += opw + gap
-    R.ctext(d, RW / 2, 950, "Move ONE matchstick to fix it.", R.font(R.SEMI, 44), R.MUTED)
-
-
 def draw_riddle(img, p, acc):
     d = ImageDraw.Draw(img)
     f = R.font(R.SEMI, 54)
@@ -185,8 +138,7 @@ def draw_riddle(img, p, acc):
         y += lh
 
 
-DRAW = {"emoji_word": draw_emoji_word, "odd_grid": draw_grid, "math": draw_math,
-        "matchstick": draw_matchstick, "riddle": draw_riddle}
+DRAW = {"emoji_word": draw_emoji_word, "odd_grid": draw_grid, "math": draw_math, "riddle": draw_riddle}
 
 
 def card(img, p, acc):

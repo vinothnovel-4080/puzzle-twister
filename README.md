@@ -51,7 +51,7 @@ Captions use at most 5 hashtags (Instagram's current limit) and put the search k
 | Slot | Time (IST) | Styles | Answers |
 |---|---|---|---|
 | 1 | 12:47 pm | Emoji word · find the odd one in a grid | Typed in the comments, no options |
-| 2 | 5:47 pm | Quick maths · matchstick | A/B/C, shown when the countdown reaches 3 |
+| 2 | 5:47 pm | Quick maths | A/B/C, shown when the countdown reaches 3 |
 | 3 | 8:47 pm | Riddle · logic | A/B/C, shown when the countdown reaches 3 |
 
 - `trend.py` renders each reel (title, 10 s countdown with timer bar, end card), cover and caption into `trend/` on Pages.
