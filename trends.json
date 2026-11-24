@@ -2,7 +2,8 @@
   "start_date": "2026-11-26",
   "slots": {"1": "12:47 IST", "2": "17:47 IST", "3": "20:47 IST"},
   "posts": [
-    {"id": 1, "day": 1, "slot": 1, "kind": "emoji_word", "emojis": ["🌧", "🏹"], "caption_emojis": "🌧️ + 🏹", "answer": "RAINBOW"},
+    {"id": 1, "day": 1, "slot": 1, "kind": "emoji_word", "emojis": ["🌧", "🏹"], "caption_emojis": "🌧️ + 🏹", "answer": "RAINBOW",
+     "ask": "💬 Type the word in the comments. We reveal the answer on 27 Nov!\n📤 Send this to the friend who always guesses first.\n"},
     {"id": 2, "day": 1, "slot": 2, "kind": "math", "expr": "8 - 2 × 3 + 1 = ?", "choices": ["19", "3", "1"], "answer_letter": "B"},
     {"id": 3, "day": 1, "slot": 3, "kind": "riddle", "question": "When I was 6, my sister was half my age. Now I'm 40. How old is my sister?", "choices": ["20", "37", "34"], "answer_letter": "B"},
 

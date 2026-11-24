@@ -75,6 +75,7 @@ def caption(data, p):
     else:
         head = f"Riddle #{n} 🤔 Think before you answer!\n\n{p['question']}\n\n{opts}"
         ask = "💬 Comment A, B or C. Answer tomorrow!\n📤 Send this to someone who loves riddles.\n"
+    ask = p.get("ask", ask)  # per-post override, e.g. when the reveal isn't the next day
     prev = find(data, p["day"] - 1, p["slot"])
     reveal = f"✅ Yesterday's answer: {answer_text(prev)}\n\n" if prev else ""
     return head + reveal + ask + FOLLOW + "\n\n" + " ".join(HASHTAGS[k])
