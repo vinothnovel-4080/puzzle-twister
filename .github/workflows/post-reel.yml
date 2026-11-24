@@ -65,7 +65,8 @@ jobs:
         env:
           DAY: ${{ steps.day.outputs.day }}
         run: |
-          python post_reel.py --day "$DAY" --dry-run | tee proof.txt
+          set -o pipefail   # a failed token/account check must fail this step (tee hides it otherwise)
+          PYTHONUNBUFFERED=1 python post_reel.py --day "$DAY" --dry-run | tee proof.txt
           video=$(grep -m1 '^Video: ' proof.txt | cut -d' ' -f2)
           cover=$(grep -m1 '^Cover: ' proof.txt | cut -d' ' -f2)
           {
