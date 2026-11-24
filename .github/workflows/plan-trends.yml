@@ -1,0 +1,55 @@
+name: Plan trend puzzles
+
+# Every Sunday (and on demand): add new trend puzzles so ~10 days are always ready,
+# commit them to trends.json, then rebuild the reels. Pushes made by this workflow
+# don't trigger other workflows, so it starts "Build reels" itself.
+on:
+  schedule:
+    - cron: "17 18 * * 0"   # Sunday 11:47 pm IST
+  workflow_dispatch:
+    inputs:
+      days_ahead:
+        description: "Keep this many days planned"
+        required: false
+        default: "10"
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: plan-trends
+  cancel-in-progress: false
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Generate puzzles
+        env:
+          TREND_START_DATE: ${{ vars.TREND_START_DATE }}
+          AHEAD: ${{ inputs.days_ahead || '10' }}
+        run: python gen_trends.py --days-ahead "$AHEAD" | tee plan.txt
+
+      - name: Commit and rebuild
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if git diff --quiet trends.json; then
+            echo "No new puzzles needed." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          { echo "## New puzzles"; echo '```'; cat plan.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add trends.json
+          git commit -m "Plan trend puzzles: $(grep -m1 '^Added' plan.txt)"
+          git push
+          gh workflow run build-reels.yml --ref main

@@ -330,8 +330,10 @@ def main():
     data = T.load()
     os.makedirs(OUT, exist_ok=True)
     only = {int(a) for a in sys.argv[1:]}
+    # Posts already published don't need their files any more; build yesterday onwards.
+    first = -10**6 if os.environ.get("TREND_BUILD_ALL") else T.today_day(data) - 1
     for p in data["posts"]:
-        if not only or p["id"] in only:
+        if (only and p["id"] in only) or (not only and p["day"] >= first):
             build(data, p)
 
 

@@ -46,7 +46,7 @@ Captions use at most 5 hashtags (Instagram's current limit) and put the search k
 - Quiz stickers can't be added through the API: to use one, share the reel to your Story in the app.
 
 ## Trend series (3 extra posts a day)
-`trends.json` holds a 7-day sequence of 21 puzzles in trending styles, posted alongside the planned reel:
+`trends.json` holds the trend puzzles, posted alongside the planned reel. It keeps itself topped up (see below):
 
 | Slot | Time (IST) | Styles | Answers |
 |---|---|---|---|
@@ -58,6 +58,20 @@ Captions use at most 5 hashtags (Instagram's current limit) and put the search k
 - `post_trend.py` + **Post trend puzzle** workflow post them, with backups 30 minutes after each slot.
 - Day 1 is `start_date` in `trends.json` (or the repository variable `TREND_START_DATE`).
 - Each caption reveals the previous day's answer for the same slot.
+- Builds only render yesterday's, today's and upcoming posts (set `TREND_BUILD_ALL=1` to render everything).
+
+### Keeping the series going
+**Plan trend puzzles** runs every Sunday night (or by hand) and runs `gen_trends.py`, which adds days so about
+10 are always planned, commits `trends.json` and starts **Build reels**:
+- quick maths traps are generated; the right answer is calculated and wrong options come from common mistakes
+- odd-one grids are generated with a random position
+- emoji words and riddles come from hand-checked banks in `gen_trends.py`, never repeating;
+  every third day slot 3 is a generated number sequence instead
+- every new post is checked (answers, options, caption) before it is saved; a failed check stops the run
+
+### Token health check
+**Token health check** runs daily at 5:47 am IST and fails (GitHub emails you) if the Instagram token stops
+working, two hours before the first post.
 
 ## Posting a day by hand
 Actions → *Post reel to Instagram* → Run workflow → enter the day (1-11; 11 = Day 10 answer reel).

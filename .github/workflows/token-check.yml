@@ -1,0 +1,38 @@
+name: Token health check
+
+# Every day at 5:47 am IST, two hours before the first post: check that the Instagram
+# token still works. If it doesn't, this run fails and GitHub emails you, so the token
+# can be replaced before anything is missed.
+on:
+  schedule:
+    - cron: "17 0 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      INSTAGRAM_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_ACCESS_TOKEN }}
+      IG_USER_ID: ${{ secrets.IG_USER_ID }}
+      GRAPH_BASE: ${{ vars.GRAPH_BASE }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Check token
+        run: |
+          python - <<'EOF'
+          import os
+          from post_reel import graph, token
+          acct = graph("GET", os.environ["IG_USER_ID"].strip(), fields="username")
+          t = token()
+          print(f"Token OK ({t[:3]}..., {len(t)} chars): can post as @{acct.get('username')}")
+          EOF
+          echo "Token OK. Posting will work today." >> "$GITHUB_STEP_SUMMARY"
