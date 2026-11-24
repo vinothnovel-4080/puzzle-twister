@@ -280,9 +280,45 @@ def slide_answer(brand, p, accent):
     return img
 
 
+def slide_cover(brand, p, accent, answer=False):
+    """1080x1920 reel cover: day number, puzzle type and that day's puzzle (or answer).
+    Everything important sits between y=240 and y=1680, the part the profile grid shows."""
+    CW, CH = 1080, 1920
+    img = Image.new("RGB", (CW, CH), INK)
+    d = ImageDraw.Draw(img)
+    # soft accent circles so each day's cover has its own colour at a glance
+    soft = tuple(int(c * 0.45 + i * 0.55) for c, i in zip(accent, INK))
+    d.ellipse([CW - 380, -160, CW + 220, 440], fill=soft)
+    d.ellipse([-260, CH - 420, 340, CH + 180], fill=soft)
+    ctext(d, CW / 2, 300, brand["name"], font(BOLD, 44), WHITE)
+    label = f"DAY {p['day']:02d} ANSWER" if answer else f"DAY {p['day']:02d}"
+    ctext(d, CW / 2, 415, label, font(BOLD, 104 if answer else 150), accent)
+    ctext(d, CW / 2, 535, p["type"].upper(), font(BOLD, 50), WHITE)
+    slide = slide_answer(brand, p, accent) if answer else slide_puzzle(brand, p, accent)
+    sd = ImageDraw.Draw(slide)
+    sd.rectangle([W - 270, 1170, W - 50, 1245], fill=BG)  # hide the carousel "SWIPE" pill
+    scale = 0.70
+    w, h = int(W * scale), int(H * scale)
+    lanczos = getattr(Image, "Resampling", Image).LANCZOS
+    small = slide.resize((w, h), lanczos)
+    x, y = (CW - w) // 2, 600
+    d.rounded_rectangle([x - 10, y - 10, x + w + 10, y + h + 10], radius=28, fill=accent)
+    img.paste(small, (x, y))
+    ctext(d, CW / 2, y + h + 75, "DID YOU GET IT RIGHT?" if answer else "CAN YOU SOLVE IT?", font(BOLD, 64), WHITE)
+    return img
+
+
 def main():
     data = json.load(open(os.path.join(HERE, "puzzles.json"), encoding="utf-8"))
     brand = data["brand"]
+    covers = os.path.join(HERE, "out", "covers")
+    os.makedirs(covers, exist_ok=True)
+    for p in data["puzzles"]:
+        accent = ACCENTS[(p["day"] - 1) % len(ACCENTS)]
+        slide_cover(brand, p, accent).save(os.path.join(covers, f"cover_day{p['day']:02d}.jpg"), "JPEG", quality=90)
+    last = data["puzzles"][-1]
+    slide_cover(brand, last, ACCENTS[(last["day"] - 1) % len(ACCENTS)], answer=True).save(
+        os.path.join(covers, "cover_day10_answer.jpg"), "JPEG", quality=90)
     for p in data["puzzles"]:
         accent = ACCENTS[(p["day"] - 1) % len(ACCENTS)]
         out = os.path.join(HERE, "out", f"day_{p['day']:02d}")

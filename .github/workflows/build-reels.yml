@@ -80,12 +80,16 @@ jobs:
 
       - name: Assemble site
         run: |
-          mkdir -p site/slides
+          mkdir -p site/slides site/covers
           cp -r out/day_* site/slides/
+          cp out/covers/*.jpg site/covers/
+          test "$(ls site/covers/*.jpg | wc -l)" -eq 11
           {
             echo '<!doctype html><meta charset="utf-8"><title>Puzzle Twister reels</title>'
             echo '<h1>Puzzle Twister reels</h1><ul>'
             for f in site/reels/*.mp4; do n=$(basename "$f"); echo "<li><a href=\"reels/$n\">$n</a></li>"; done
+            echo '</ul><h2>Covers</h2><ul>'
+            for f in site/covers/*.jpg; do n=$(basename "$f"); echo "<li><a href=\"covers/$n\">$n</a></li>"; done
             echo '</ul>'
           } > site/index.html
 

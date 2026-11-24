@@ -56,11 +56,22 @@ def post_for_day(day):
     if day == 11:
         caption = d["finale_caption"] + " ".join(d["finale_hashtags"])
         video = "puzzle_twister_day10_answer_reel.mp4"
+        cover = "cover_day10_answer.jpg"
     else:
         p = d["puzzles"][day - 1]
         caption = p["reel_caption"] + " ".join(p["reel_hashtags"])
         video = f"puzzle_twister_day{day:02d}_reel.mp4"
-    return caption, f"{os.environ.get('MEDIA_BASE_URL', '<MEDIA_BASE_URL>').rstrip('/')}/reels/{video}"
+        cover = f"cover_day{day:02d}.jpg"
+    base = os.environ.get("MEDIA_BASE_URL", "<MEDIA_BASE_URL>").rstrip("/")
+    return caption, f"{base}/reels/{video}", f"{base}/covers/{cover}"
+
+
+def reachable(url):
+    try:
+        with urllib.request.urlopen(urllib.request.Request(url, method="HEAD"), timeout=30) as r:
+            return r.status == 200
+    except Exception:
+        return False
 
 
 def main():
@@ -75,8 +86,8 @@ def main():
     if not 1 <= day <= 11:
         print(f"No post scheduled (day {day}). Series runs {START_DATE} for 11 days.")
         return
-    caption, url = post_for_day(day)
-    print(f"Day {day}\nVideo: {url}\nCaption:\n{caption}\n")
+    caption, url, cover = post_for_day(day)
+    print(f"Day {day}\nVideo: {url}\nCover: {cover}\nCaption:\n{caption}\n")
     if "--dry-run" in args:
         # Read-only check that the token and account ID work (posts nothing).
         if os.environ.get("INSTAGRAM_ACCESS_TOKEN") and os.environ.get("IG_USER_ID"):
@@ -148,7 +159,13 @@ def main():
             if (m.get("caption") or "").strip().startswith(first_line):
                 print(f"Already posted: {m.get('permalink')}  (use --force to post again)")
                 return
-    c = graph("POST", f"{ig}/media", media_type="REELS", video_url=url, caption=caption, share_to_feed="true")
+    extra = {}
+    if reachable(cover):
+        extra["cover_url"] = cover  # thumbnail for the feed, Reels tab and profile grid
+        print(f"Cover reachable: {cover}")
+    else:
+        print(f"WARNING: cover not reachable ({cover}); Instagram will use the first frame.")
+    c = graph("POST", f"{ig}/media", media_type="REELS", video_url=url, caption=caption, share_to_feed="true", **extra)
     cid = c["id"]
     for _ in range(60):  # up to ~10 min for Instagram to process the video
         s = graph("GET", cid, fields="status_code,status")

@@ -66,10 +66,15 @@ jobs:
         run: |
           python post_reel.py --day "$DAY" --dry-run | tee proof.txt
           video=$(grep -m1 '^Video: ' proof.txt | cut -d' ' -f2)
+          cover=$(grep -m1 '^Cover: ' proof.txt | cut -d' ' -f2)
           {
             echo "## Proof for Day $DAY"
             echo
             echo "**Video:** [$video]($video)"
+            echo
+            echo "**Cover:** [$cover]($cover)"
+            echo
+            echo "<img src=\"$cover\" width=\"270\" alt=\"Day $DAY cover\">"
             echo
             echo "**Caption and hashtags:**"
             echo '```'
