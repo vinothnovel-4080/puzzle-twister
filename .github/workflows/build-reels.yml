@@ -12,6 +12,7 @@ on:
       - render.py
       - reels.py
       - reels2.py
+      - sample_emoji.py
       - .github/workflows/build-reels.yml
 
 permissions:
@@ -93,6 +94,16 @@ jobs:
           python reels2.py all
           ls -la "$REELS_OUT"
           test "$(ls "$REELS_OUT"/*.mp4 | wc -l)" -eq 11
+
+      - name: Build emoji puzzle sample
+        # A trial format; a failure here must not stop the daily reels from deploying.
+        continue-on-error: true
+        env:
+          EMOJI_FONT: ${{ github.workspace }}/fonts/NotoColorEmoji.ttf
+          SAMPLE_OUT: ${{ github.workspace }}/site/samples
+        run: |
+          curl -fsSL --retry 3 -o "$EMOJI_FONT" https://github.com/googlefonts/noto-emoji/raw/main/fonts/NotoColorEmoji.ttf
+          python sample_emoji.py
 
       - name: Assemble site
         run: |
