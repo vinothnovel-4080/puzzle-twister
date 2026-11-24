@@ -21,7 +21,7 @@ permissions:
 
 concurrency:
   group: pages
-  cancel-in-progress: false
+  cancel-in-progress: true   # a newer push replaces a build that is still running
 
 jobs:
   build:
@@ -40,7 +40,23 @@ jobs:
           python-version: "3.12"
 
       - name: Install ffmpeg
-        run: sudo apt-get update -q && sudo apt-get install -y -q ffmpeg
+        timeout-minutes: 12
+        run: |
+          # The Ubuntu mirror is sometimes very slow; give apt a short leash, then fall back
+          # to a static ffmpeg build.
+          apt_opts="-o Acquire::Retries=2 -o Acquire::http::Timeout=20 -o Acquire::https::Timeout=20"
+          if timeout 300 sudo apt-get $apt_opts update -q && timeout 300 sudo apt-get $apt_opts install -y -q --no-install-recommends ffmpeg; then
+            echo "ffmpeg from apt"
+          else
+            echo "apt was too slow; downloading a static ffmpeg build"
+            mkdir -p "$RUNNER_TEMP/ffmpeg"
+            curl -fsSL --retry 3 -o "$RUNNER_TEMP/ffmpeg.tar.xz" https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz
+            tar -xJf "$RUNNER_TEMP/ffmpeg.tar.xz" -C "$RUNNER_TEMP/ffmpeg" --strip-components=1
+            echo "$RUNNER_TEMP/ffmpeg" >> "$GITHUB_PATH"
+          fi
+
+      - name: Check ffmpeg
+        run: ffmpeg -hide_banner -version | head -1
 
       - name: Install Python packages
         run: pip install pillow numpy soundfile kokoro-onnx
