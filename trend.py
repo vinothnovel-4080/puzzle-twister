@@ -21,10 +21,16 @@ RW, RH, FPS, SR = B.RW, B.RH, B.FPS, B.SR
 LANCZOS = getattr(Image, "Resampling", Image).LANCZOS
 
 ACCENT = {"emoji_word": R.ACCENTS[3], "odd_grid": R.ACCENTS[2], "math": R.ACCENTS[1],
-          "riddle": R.ACCENTS[4]}
+          "riddle": R.ACCENTS[4], "stroop": R.ACCENTS[4], "first_word": R.ACCENTS[3],
+          "spot_diff": R.ACCENTS[0], "count_emoji": R.ACCENTS[2], "memory": R.ACCENTS[1]}
 TOP = {"emoji_word": ("EMOJI PUZZLE", "GUESS THE WORD"), "odd_grid": ("FIND THE ODD ONE", "IN 10 SECONDS"),
-       "math": ("QUICK MATHS", "CAN YOU SOLVE IT?"), "riddle": ("RIDDLE", "THINK FIRST!")}
+       "math": ("QUICK MATHS", "CAN YOU SOLVE IT?"), "riddle": ("RIDDLE", "THINK FIRST!"),
+       "stroop": ("BRAIN TEST", "SAY THE COLOUR!"), "first_word": ("WHAT'S THE FIRST", "WORD YOU SEE?"),
+       "spot_diff": ("SPOT THE DIFFERENCE", "HOW MANY?"), "count_emoji": ("COUNT CHALLENGE", "HOW MANY?"),
+       "memory": ("MEMORY TEST", "LOOK CLOSELY!")}
 VO_END_OPTIONS = "Comment A, B, or C, and send this to a friend. Answer tomorrow!"
+INK = {"RED": (220, 50, 50), "BLUE": (40, 100, 220), "GREEN": (30, 150, 70),
+       "YELLOW": (225, 170, 0), "PURPLE": (130, 60, 200), "ORANGE": (240, 120, 20)}
 
 
 def vo_lines(p):
@@ -37,6 +43,20 @@ def vo_lines(p):
                 "Comment the row and column, and send this to a friend. Answer tomorrow!")
     if k == "math":
         return ("Quick maths! What's the answer? Options appear at three.", VO_END_OPTIONS)
+    if k == "stroop":
+        return ("Brain test! Say the colour of each word out loud, not the word itself. Go!",
+                "How long did it take you? Comment your time, and challenge a friend!")
+    if k == "first_word":
+        return ("What's the first word you see? Look closely!",
+                "Comment the first word you saw, and send this to a friend!")
+    if k == "spot_diff":
+        return ("Spot the difference! How many changes can you find between the two grids?",
+                "Comment how many you found, and send this to a friend. Answer tomorrow!")
+    if k == "count_emoji":
+        return (f"Count challenge! How many {p['target']} can you count? Careful, some look alike!",
+                "Comment your number, and send this to a friend. Answer tomorrow!")
+    if k == "memory":
+        return ("Memory test! Look at the grid for five seconds and remember it.", VO_END_OPTIONS)
     return (p["question"].replace("₹", " rupees ") + " Options appear at three.", VO_END_OPTIONS)
 
 
@@ -138,7 +158,64 @@ def draw_riddle(img, p, acc):
         y += lh
 
 
-DRAW = {"emoji_word": draw_emoji_word, "odd_grid": draw_grid, "math": draw_math, "riddle": draw_riddle}
+def draw_stroop(img, p, acc):
+    d = ImageDraw.Draw(img)
+    f = R.font(R.BOLD, 64)
+    for i, (word, ink) in enumerate(p["words"]):
+        r, c = divmod(i, 3)
+        R.ctext(d, 230 + c * 310, 530 + r * 130, word, f, INK[ink])
+    R.ctext(d, RW / 2, 1085, "Say each COLOUR out loud.", R.font(R.SEMI, 42), R.MUTED)
+
+
+def draw_first_word(img, p, acc):
+    d = ImageDraw.Draw(img)
+    f = R.font(R.BOLD, 54)
+    cw, ch, x0, y0 = 98, 72, RW / 2 - 98 * 4, 505
+    for r, row in enumerate(p["grid"]):
+        for c, letter in enumerate(row):
+            R.ctext(d, x0 + c * cw, y0 + r * ch, letter, f, R.INK)
+
+
+def emoji_block(img, items, cols, cx, cy, cell, size):
+    rows = math.ceil(len(items) / cols)
+    x0, y0 = cx - cell * cols / 2, cy - cell * rows / 2
+    for i, e in enumerate(items):
+        r, c = divmod(i, cols)
+        paste_emoji(img, e, x0 + cell * (c + 0.5), y0 + cell * (r + 0.5), size)
+
+
+def draw_spot_diff(img, p, acc):
+    d = ImageDraw.Draw(img)
+    for label, items, cx in (("A", p["left"], RW / 2 - 225), ("B", p["right"], RW / 2 + 225)):
+        d.rounded_rectangle([cx - 205, 515, cx + 205, 925], radius=24, fill=R.WHITE, outline=(225, 214, 200), width=4)
+        R.ctext(d, cx, 485, label, R.font(R.BOLD, 40), acc)
+        emoji_block(img, items, 4, cx, 720, 98, 78)
+    R.ctext(d, RW / 2, 1010, "How many differences?", R.font(R.SEMI, 46), R.MUTED)
+
+
+def draw_count(img, p, acc):
+    emoji_block(img, p["cells"], 7, RW / 2, 790, 118, 92)
+
+
+def draw_memory(img, p, acc):
+    d = ImageDraw.Draw(img)
+    cell, cx, cy = 190, RW / 2, 700
+    if p.get("_phase") == "ask":
+        x0, y0 = cx - cell * 1.5, cy - cell * 1.5
+        for i in range(9):
+            r, c = divmod(i, 3)
+            x, y = x0 + c * cell + 10, y0 + r * cell + 10
+            d.rounded_rectangle([x, y, x + cell - 20, y + cell - 20], radius=24, fill=acc)
+            R.ctext(d, x + (cell - 20) / 2, y + (cell - 20) / 2, "?", R.font(R.BOLD, 90), R.WHITE)
+        R.ctext(d, RW / 2, 1030, p["question"], R.font(R.BOLD, 46), R.INK)
+    else:
+        emoji_block(img, p["grid"], 3, cx, cy, cell, 150)
+        R.ctext(d, RW / 2, 1030, "Remember where everything is!", R.font(R.SEMI, 44), R.MUTED)
+
+
+DRAW = {"emoji_word": draw_emoji_word, "odd_grid": draw_grid, "math": draw_math, "riddle": draw_riddle,
+        "stroop": draw_stroop, "first_word": draw_first_word, "spot_diff": draw_spot_diff,
+        "count_emoji": draw_count, "memory": draw_memory}
 
 
 def card(img, p, acc):
@@ -159,13 +236,27 @@ def panel_box(d, acc):
 def panel_comment(img, p, acc):
     d = ImageDraw.Draw(img)
     panel_box(d, acc)
-    if p["kind"] == "emoji_word":
+    k, icon = p["kind"], "👇"
+    if k == "emoji_word":
         l1, l2 = "TYPE THE WORD", "IN THE COMMENTS"
-    else:
+    elif k == "odd_grid":
         l1, l2 = "COMMENT ROW + COLUMN", "like  2, 5"
-    R.ctext(d, RW / 2, 1290, l1, R.font(R.BOLD, 62), acc)
+    elif k == "stroop":
+        l1, l2, icon = "SAY THE COLOUR, NOT THE WORD", "Comment your time", "⏱"
+    elif k == "first_word":
+        l1, l2 = "COMMENT THE FIRST WORD", "you spotted"
+    elif k == "spot_diff":
+        l1, l2, icon = "HOW MANY DIFFERENCES?", "Comment the number", "🔍"
+    elif k == "count_emoji":
+        l1, l2, icon = "HOW MANY CAN YOU COUNT?", "Comment the number", p["target_emoji"]
+    else:  # memory, first phase
+        l1, l2, icon = "MEMORISE THE GRID", "It disappears at 0!", "🧠"
+    size = 62
+    while d.textlength(l1, font=R.font(R.BOLD, size)) > RW - 140:
+        size -= 2
+    R.ctext(d, RW / 2, 1290, l1, R.font(R.BOLD, size), acc)
     R.ctext(d, RW / 2, 1385, l2, R.font(R.BOLD, 52), R.WHITE)
-    paste_emoji(img, "👇", RW / 2, 1550, 140)
+    paste_emoji(img, icon, RW / 2, 1550, 140)
 
 
 def panel_teaser(img, p, acc):
@@ -177,7 +268,18 @@ def panel_teaser(img, p, acc):
 
 
 def panel_choices(img, p, acc):
-    V.draw_choices(img, p, acc)
+    if p["kind"] != "memory":
+        V.draw_choices(img, p, acc)
+        return
+    # memory options are emojis, which the text font can't draw
+    d = ImageDraw.Draw(img)
+    panel_box(d, acc)
+    R.ctext(d, RW / 2, 1258, "COMMENT A, B OR C", R.font(R.BOLD, 46), acc)
+    for i, (letter, e) in enumerate(zip("ABC", p["choices"])):
+        cx = RW / 2 + (i - 1) * 300
+        d.ellipse([cx - 42, 1330, cx + 42, 1414], fill=acc)
+        R.ctext(d, cx, 1374, letter, R.font(R.BOLD, 48), R.WHITE)
+        paste_emoji(img, e, cx, 1545, 150)
 
 
 # ---------------- frames ----------------
@@ -201,7 +303,13 @@ def top_title(p, acc, prev):
         R.ctext(d, RW / 2, 95, l1, R.font(R.BOLD, 56), R.WHITE)
         R.ctext(d, RW / 2, 185, l2, R.font(R.BOLD, 84), acc)
         if prev:
-            R.ctext(d, RW / 2, 262, f"Yesterday's answer: {T.answer_text(prev)}", R.font(R.SEMI, 32), R.WHITE)
+            text = f"Yesterday's answer: {T.short_answer(prev)}"
+            size = 32
+            while size > 22 and d.textlength(text, font=R.font(R.SEMI, size)) > RW - 80:
+                size -= 2
+            if d.textlength(text, font=R.font(R.SEMI, size)) > RW - 80:
+                text = "Yesterday's answer is in the caption"
+            R.ctext(d, RW / 2, 262, text, R.font(R.SEMI, size), R.WHITE)
     return f
 
 
@@ -214,10 +322,14 @@ def top_count(n, acc):
     return f
 
 
-def top_end(acc):
+END_TOP = {"stroop": ("HOW FAST", "WERE YOU?"), "first_word": ("MEANINGS", "TOMORROW!")}
+
+
+def top_end(acc, kind=None):
+    l1, l2 = END_TOP.get(kind, ("ANSWER", "TOMORROW!"))
     def f(d):
-        R.ctext(d, RW / 2, 105, "ANSWER", R.font(R.BOLD, 70), R.WHITE)
-        R.ctext(d, RW / 2, 200, "TOMORROW!", R.font(R.BOLD, 96), acc)
+        R.ctext(d, RW / 2, 105, l1, R.font(R.BOLD, 70), R.WHITE)
+        R.ctext(d, RW / 2, 200, l2, R.font(R.BOLD, 96), acc)
     return f
 
 
@@ -241,7 +353,10 @@ def cover(p, acc, title_frame):
     x, y = (CW - crop.width) // 2, 640
     d.rounded_rectangle([x - 10, y - 10, x + crop.width + 10, y + crop.height + 10], radius=40, fill=acc)
     img.paste(crop, (x, y))
-    ask = "OPTIONS AT 3 · COMMENT A, B, C" if T.has_options(p) else "COMMENT YOUR ANSWER"
+    if p["kind"] == "memory":
+        ask = "MEMORISE IT · THEN ANSWER"
+    else:
+        ask = "OPTIONS AT 3 · COMMENT A, B, C" if T.has_options(p) else "COMMENT YOUR ANSWER"
     R.ctext(d, CW / 2, y + crop.height + 85, ask, R.font(R.BOLD, 50), R.WHITE)
     return img
 
@@ -262,6 +377,8 @@ def mix(pl, path, seed):
         B.add(sfx, 0.25 * B.note(990, 0.5, "bell"), pl["options_at"])
     B.add(sfx, 0.22 * (B.note(880, 1.0, "bell") + B.note(1320, 1.0, "bell")), t_end)
     B.add(vo, pl["v_end"] / np.max(np.abs(pl["v_end"])), t_end + 0.25)
+    for clip, t in pl.get("extra", []):  # e.g. the memory test's question
+        B.add(vo, clip / np.max(np.abs(clip)), t)
     env = np.convolve(np.abs(vo), np.ones(int(0.15 * SR)) / int(0.15 * SR), mode="same")
     out = m * (1 - 0.7 * np.clip(env / 0.02, 0, 1)) + vo * 0.85 + sfx
     f = int(0.6 * SR); out[-f:] *= np.linspace(1, 0, f)
@@ -296,22 +413,33 @@ def build(data, p):
     N = max(10, math.ceil(len(v_hook) / SR + 0.6 - A))   # long riddles get a longer countdown
     C = max(3.5, len(v_end) / SR + 0.7)
     opts = T.has_options(p)
+    memory = p["kind"] == "memory"
     pl = dict(v_hook=v_hook, v_end=v_end, A=A, N=N, C=C, total=A + N + C,
               options_at=(A + N - 3) if opts else None)
+    show, ask = dict(p, _phase="show"), dict(p, _phase="ask")
+    if memory:
+        # 5 s to memorise, then the grid is hidden and the question + emoji options appear
+        N = pl["N"] = 10
+        pl["total"] = A + N + C
+        pl["options_at"] = A + 5
+        pl["extra"] = [(B.tts(p["question"] + " A, B, or C?", B.SPEED), A + 5.2)]
     prev = T.find(data, p["day"] - 1, p["slot"])
     bottom = f"PUZZLE TWISTER  ·  #{p['id']}"
     segs = []
-    title_panel = panel_teaser if opts else panel_comment
-    title = frame(p, acc, top_title(p, acc, prev), bottom, title_panel)
+    title_panel = panel_comment if memory else (panel_teaser if opts else panel_comment)
+    title = frame(show, acc, top_title(p, acc, prev), bottom, title_panel)
     fp = os.path.join(tmp, "title.png"); title.save(fp); segs.append((fp, A))
     for n in range(N, 0, -1):
-        panel = (panel_choices if n <= 3 else panel_teaser) if opts else panel_comment
+        if memory:
+            q, panel = (show, panel_comment) if n > 5 else (ask, panel_choices)
+        else:
+            q, panel = p, ((panel_choices if n <= 3 else panel_teaser) if opts else panel_comment)
         fp = os.path.join(tmp, f"count_{n:02d}.png")
-        frame(p, acc, top_count(n, acc), bottom, panel, timer=(n, N)).save(fp)
+        frame(q, acc, top_count(n, acc), bottom, panel, timer=(n, N)).save(fp)
         segs.append((fp, 1.0))
     end_panel = panel_choices if opts else panel_comment
     fp = os.path.join(tmp, "end.png")
-    frame(p, acc, top_end(acc), "SEND THIS TO A FRIEND", end_panel).save(fp)
+    frame(ask if memory else p, acc, top_end(acc, p["kind"]), "SEND THIS TO A FRIEND", end_panel).save(fp)
     segs.append((fp, C))
     audio = os.path.join(tmp, "mix.wav")
     mix(pl, audio, p["id"])

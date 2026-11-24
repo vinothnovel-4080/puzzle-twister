@@ -1,8 +1,10 @@
 """Extend trends.json so there are always DAYS_AHEAD days of trend posts ready.
 
-Slot 1: emoji word (odd series days) / find the odd one grid (even days)
-Slot 2: quick maths trap (generated; answer computed, wrong options = common mistakes)
-Slot 3: riddle from the bank, or a generated number sequence every third day
+Rotation (from day 11):
+Slot 1: emoji word -> spot the difference -> count challenge -> odd-one grid
+Slot 2: quick maths trap (answer computed, wrong options = common mistakes) <-> memory test
+Slot 3: Stroop test -> riddle -> first word you see -> riddle
+(number sequences fill in once the riddle bank runs out)
 
 Every new post is checked before it is written; any failed check stops the run.
 Stdlib only.  Usage: python gen_trends.py [--days-ahead 10]
@@ -70,6 +72,96 @@ GRID_PAIRS = [
     ("P", "R", False, "letter"), ("C", "G", False, "letter"),
     ("6", "9", False, "number"), ("8", "3", False, "number"), ("5", "6", False, "number"), ("1", "7", False, "number"),
 ]
+
+
+COLOURS = ["RED", "BLUE", "GREEN", "YELLOW", "PURPLE", "ORANGE"]
+# (word, meaning) sets for "first word you see" - shown as "just for fun"
+WORD_SETS = [
+    [("LOVE", "close relationships matter most right now"), ("MONEY", "you're focused on security and goals"),
+     ("PEACE", "you need rest and calm"), ("TRAVEL", "you want adventure")],
+    [("HOME", "comfort and family matter most"), ("FAME", "you want your work to be noticed"),
+     ("FUN", "you need more play in your life"), ("CALM", "you're craving a quiet moment")],
+    [("HOPE", "you're looking forward to something big"), ("POWER", "you want more control over your life"),
+     ("FRIEND", "you value the people around you"), ("DREAM", "you're thinking about your goals")],
+    [("SMILE", "you want more happy moments"), ("GOAL", "you're driven and focused"),
+     ("FREEDOM", "you want more space to be yourself"), ("FAMILY", "the people closest to you come first")],
+    [("CHANGE", "you're ready for something new"), ("REST", "you need a proper break"),
+     ("WIN", "you love a challenge"), ("TRUST", "honesty matters most to you")],
+]
+SPOT_POOLS = [["🍎", "🍌", "🍇", "🍓", "🍊", "🍉"], ["🐶", "🐱", "🐰", "🐼", "🦊", "🐸"],
+              ["⚽", "🏀", "🎾", "🏐", "🏈", "🎱"], ["🚗", "🚕", "🚌", "🚓", "🚑", "🚒"],
+              ["🌸", "🌻", "🌹", "🌷", "🌼", "🌺"]]
+# (target, name, look-alikes)
+COUNT_SETS = [("🐱", "cats", ["🐯", "🦁"]), ("🍎", "apples", ["🍅", "🍒"]), ("⭐", "stars", ["🌟", "✨"]),
+              ("🐶", "dogs", ["🐺", "🦊"]), ("🐟", "fish", ["🐠", "🐡"]), ("🌸", "flowers", ["🌺", "🌼"])]
+MEMORY_POOL = ["🍎", "🐶", "⚽", "🚗", "🌙", "🎈", "🍕", "🐸", "⭐", "🎁", "🦋", "🍦", "🚀", "🐢", "🌈", "🎸", "🍩", "🐝"]
+MEMORY_Q = [(4, "Which emoji was in the CENTRE?"), (0, "Which emoji was in the TOP-LEFT corner?"),
+            (8, "Which emoji was in the BOTTOM-RIGHT corner?"), (2, "Which emoji was in the TOP-RIGHT corner?")]
+
+
+def make_stroop(rng):
+    words = []
+    for _ in range(12):
+        w = rng.choice(COLOURS)
+        ink = rng.choice([c for c in COLOURS if c != w])
+        words.append([w, ink])
+    return {"kind": "stroop", "words": words}
+
+
+def make_first_word(rng, used_sets):
+    free = [s for s in WORD_SETS if s[0][0] not in used_sets] or WORD_SETS
+    ws = rng.choice(free)
+    for _ in range(200):
+        g = [[None] * 9 for _ in range(9)]
+        ok = True
+        for word, _m in ws:
+            placed = False
+            for _ in range(100):
+                way = rng.choice("hv")
+                r = rng.randint(0, 8 if way == "h" else 9 - len(word))
+                c = rng.randint(0, 9 - len(word) if way == "h" else 8)
+                cells = [(r, c + k) if way == "h" else (r + k, c) for k in range(len(word))]
+                if all(g[a][b] is None for a, b in cells):  # no overlaps at all, keeps words clean
+                    for (a, b), ch in zip(cells, word):
+                        g[a][b] = ch
+                    placed = True
+                    break
+            if not placed:
+                ok = False
+                break
+        if ok:
+            filler = "BCDFGHJKMNPQSVWXZ"  # no vowels: avoids accidental extra words
+            grid = ["".join(ch or rng.choice(filler) for ch in row) for row in g]
+            return {"kind": "first_word", "grid": grid, "meanings": [list(x) for x in ws]}
+    raise SystemExit("could not place first-word grid")
+
+
+def make_spot_diff(rng):
+    pool = rng.choice(SPOT_POOLS)
+    left = [rng.choice(pool) for _ in range(16)]
+    right = list(left)
+    diffs = rng.randint(3, 5)
+    for i in rng.sample(range(16), diffs):
+        right[i] = rng.choice([e for e in pool if e != left[i]])
+    return {"kind": "spot_diff", "left": left, "right": right, "diffs": diffs}
+
+
+def make_count(rng):
+    target, name, alikes = rng.choice(COUNT_SETS)
+    count = rng.randint(9, 14)
+    cells = [target] * count + [rng.choice(alikes) for _ in range(42 - count)]
+    rng.shuffle(cells)
+    return {"kind": "count_emoji", "cells": cells, "count": count, "target": name, "target_emoji": target}
+
+
+def make_memory(rng):
+    grid = rng.sample(MEMORY_POOL, 9)
+    pos, q = rng.choice(MEMORY_Q)
+    right = grid[pos]
+    wrong = rng.sample([e for i, e in enumerate(grid) if i != pos], 2)
+    opts = [right] + wrong
+    rng.shuffle(opts)
+    return {"kind": "memory", "grid": grid, "question": q, "choices": opts, "answer_letter": "ABC"[opts.index(right)]}
 
 
 def ev(expr):
@@ -146,6 +238,22 @@ def check(p):
     if k == "math":
         right = ev(p["expr"])
         assert str(int(right)) == p["choices"]["ABC".index(p["answer_letter"])], p
+    if k == "stroop":
+        assert len(p["words"]) == 12 and all(w != ink for w, ink in p["words"])
+    if k == "first_word":
+        rows = p["grid"]
+        cols = ["".join(r[c] for r in rows) for c in range(9)]
+        for w, _m in p["meanings"]:
+            assert any(w in line for line in rows + cols), w
+    if k == "spot_diff":
+        assert sum(a != b for a, b in zip(p["left"], p["right"])) == p["diffs"]
+    if k == "count_emoji":
+        assert p["cells"].count(p["target_emoji"]) == p["count"] and len(p["cells"]) == 42
+    if k == "memory":
+        pos = {"CENTRE": 4, "TOP-LEFT": 0, "BOTTOM-RIGHT": 8, "TOP-RIGHT": 2}
+        idx = next(v for key, v in pos.items() if key in p["question"])
+        assert p["grid"][idx] == p["choices"]["ABC".index(p["answer_letter"])]
+        assert len(set(p["choices"])) == 3
     T.caption({"posts": []}, p)  # caption must build
 
 
@@ -162,38 +270,56 @@ def main():
     used_grid = [(p["base"], p["odd"]) for p in posts if p["kind"] == "odd_grid"]
     next_id = max(p["id"] for p in posts) + 1
     added = []
+    used_sets = {p["meanings"][0][0] for p in posts if p["kind"] == "first_word"}
+
+    def emoji_word(rng):
+        free = [w for w in EMOJI_WORDS if w[2] not in used_words] or EMOJI_WORDS
+        emojis, cap, ans = rng.choice(free)
+        used_words.add(ans)
+        return {"kind": "emoji_word", "emojis": emojis, "caption_emojis": cap, "answer": ans}
+
+    def odd_grid(rng):
+        # prefer pairs never used; once all are used, avoid the most recent ones
+        free_g = [g for g in GRID_PAIRS if (g[0], g[1]) not in used_grid] or \
+                 [g for g in GRID_PAIRS if (g[0], g[1]) not in used_grid[-6:]]
+        base, odd, is_emoji, name = rng.choice(free_g)
+        used_grid.append((base, odd))
+        return {"kind": "odd_grid", "base": base, "odd": odd, "emoji": is_emoji, "name": name,
+                "rows": 6, "cols": 6, "odd_row": rng.randint(1, 6), "odd_col": rng.randint(1, 6)}
+
+    def math_trap(rng):
+        for _ in range(20):
+            p = make_math(rng)
+            if p["expr"] not in used_expr:
+                break
+        used_expr.add(p["expr"])
+        return p
+
+    def riddle(rng):
+        free_r = [r for r in RIDDLES if r[0] not in used_q]
+        if not free_r:
+            return make_sequence(rng)
+        q, right, w1, w2 = rng.choice(free_r)
+        used_q.add(q)
+        opts = [right, w1, w2]
+        rng.shuffle(opts)
+        return {"kind": "riddle", "question": q, "choices": opts, "answer_letter": "ABC"[opts.index(right)]}
+
+    def first_word(rng):
+        p = make_first_word(rng, used_sets)
+        used_sets.add(p["meanings"][0][0])
+        return p
+
+    # Rotation from day 11 (5 Dec): interactive formats in every slot.
+    S1 = [emoji_word, make_spot_diff, make_count, odd_grid]
+    S2 = [math_trap, make_memory]
+    S3 = [make_stroop, riddle, first_word, riddle]
     for day in range(last_day + 1, target + 1):
         rng = random.Random(f"puzzle-twister-{day}")
-        # slot 1
-        if day % 2 == 1:
-            free = [w for w in EMOJI_WORDS if w[2] not in used_words] or EMOJI_WORDS
-            emojis, cap, ans = rng.choice(free)
-            used_words.add(ans)
-            p1 = {"kind": "emoji_word", "emojis": emojis, "caption_emojis": cap, "answer": ans}
-        else:
-            # prefer pairs never used; once all are used, avoid the most recent ones
-            free_g = [g for g in GRID_PAIRS if (g[0], g[1]) not in used_grid] or \
-                     [g for g in GRID_PAIRS if (g[0], g[1]) not in used_grid[-6:]]
-            base, odd, is_emoji, name = rng.choice(free_g)
-            used_grid.append((base, odd))
-            p1 = {"kind": "odd_grid", "base": base, "odd": odd, "emoji": is_emoji, "name": name,
-                  "rows": 6, "cols": 6, "odd_row": rng.randint(1, 6), "odd_col": rng.randint(1, 6)}
-        # slot 2
-        for _ in range(20):
-            p2 = make_math(rng)
-            if p2["expr"] not in used_expr:
-                break
-        used_expr.add(p2["expr"])
-        # slot 3
-        free_r = [r for r in RIDDLES if r[0] not in used_q]
-        if day % 3 == 0 or not free_r:
-            p3 = make_sequence(rng)
-        else:
-            q, right, w1, w2 = rng.choice(free_r)
-            used_q.add(q)
-            opts = [right, w1, w2]
-            rng.shuffle(opts)
-            p3 = {"kind": "riddle", "question": q, "choices": opts, "answer_letter": "ABC"[opts.index(right)]}
+        i = day - 11
+        p1 = S1[i % 4](rng)
+        p2 = S2[i % 2](rng)
+        p3 = S3[i % 4](rng)
         for slot, p in ((1, p1), (2, p2), (3, p3)):
             p = {"id": next_id, "day": day, "slot": slot, **p}
             next_id += 1
