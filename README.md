@@ -9,9 +9,9 @@ Everything runs on GitHub. Nothing needs to be installed on your computer.
 | `render.py` | Draws the 1080x1350 Instagram carousel slides (puzzle, hint, answer) into `out/day_XX/`. |
 | `reels.py` | Shared helpers for reels: English voiceover (Kokoro TTS), generated background music, sound effects. |
 | `reels2.py` | Builds the 15-second vertical reels: yesterday's answer, then today's puzzle, a 3-2-1 countdown with the A/B/C options and "Answer tomorrow". |
-| `post_reel.py` | Posts the day's reel with its cover, then adds a first comment ("Comment A, B or C") and posts the cover as a Story. |
+| `post_reel.py` | Posts the day's reel with its cover, then posts the cover as a Story. |
 | `reply_comments.py` | Replies to new comments on the latest reels, without giving the answer away. |
-| `.github/workflows/reply-comments.yml` | **Reply to comments**: runs `reply_comments.py` every 30 minutes. |
+| `.github/workflows/reply-comments.yml` | **Reply to comments**: runs `reply_comments.py` (switched off for now; run by hand). |
 | `.github/workflows/build-reels.yml` | **Build reels**: makes all 11 reels and the slides, then publishes them on GitHub Pages. Runs when puzzles or scripts change, or by hand. |
 | `.github/workflows/post-reel.yml` | **Post reel to Instagram**: runs every day at 8:00 am IST and posts that day's reel. Can also be run by hand for any day. |
 
@@ -37,12 +37,12 @@ Captions use at most 5 hashtags (Instagram's current limit) and put the search k
 
 ## Interaction
 - Every puzzle has A/B/C options, in the caption and on the reel's countdown and end screens.
-- Right after posting, the script comments "Your answer? Comment A, B or C 👇" and posts the cover as a Story
+- Right after posting, the script posts the cover as a Story
   (set the repository variable `POST_STORY` to `false` to stop the Story).
-- **Reply to comments** answers new comments every 30 minutes with a varied, friendly reply that never says
-  whether the answer is right.
-- First comment and replies need the **instagram_manage_comments** permission on the token. Without it they
-  are skipped with a warning; posting still works.
+- **Switched off for now:** an automatic first comment ("Your answer? Comment A, B or C 👇") and
+  **Reply to comments**, which answers new comments with a friendly reply that never gives the answer away.
+  Both need the comments permission on the token. To turn them on: set the repository variable
+  `POST_FIRST_COMMENT` to `true`, and add the schedule shown at the top of `reply-comments.yml`.
 - Quiz stickers can't be added through the API: to use one, share the reel to your Story in the app.
 
 ## Posting a day by hand

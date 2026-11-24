@@ -1,10 +1,12 @@
 name: Reply to comments
 
-# Every 30 minutes: reply to new comments on the latest reels (see reply_comments.py).
+# Reply to new comments on the latest reels (see reply_comments.py).
 # Needs the instagram_manage_comments permission on the INSTAGRAM_ACCESS_TOKEN secret.
+# Switched off for now: only runs when started by hand. To run it every 30 minutes,
+# add this under "on:":
+#   schedule:
+#     - cron: "7,37 * * * *"
 on:
-  schedule:
-    - cron: "7,37 * * * *"
   workflow_dispatch:
     inputs:
       dry_run:

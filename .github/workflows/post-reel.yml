@@ -37,6 +37,7 @@ env:
   START_DATE: ${{ vars.START_DATE }}
   GRAPH_BASE: ${{ vars.GRAPH_BASE }}
   POST_STORY: ${{ vars.POST_STORY || 'true' }}
+  POST_FIRST_COMMENT: ${{ vars.POST_FIRST_COMMENT || 'false' }}
 
 jobs:
   preview:

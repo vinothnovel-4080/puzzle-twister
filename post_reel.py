@@ -196,8 +196,10 @@ def try_graph(what, method, path, **params):
 
 def after_post(ig, media_id, day, cover):
     # 1. First comment, so the reel never starts with an empty comment section.
-    #    Needs the instagram_manage_comments permission on the token.
-    if day <= 10 and try_graph("first comment", "POST", f"{media_id}/comments", message=FIRST_COMMENT):
+    #    Off unless the repository variable POST_FIRST_COMMENT is "true"; needs the
+    #    instagram_manage_comments (or instagram_business_manage_comments) permission.
+    if (os.environ.get("POST_FIRST_COMMENT", "false").lower() == "true" and day <= 10
+            and try_graph("first comment", "POST", f"{media_id}/comments", message=FIRST_COMMENT)):
         print("First comment posted.")
     # 2. The day's cover as a Story, pointing followers at the new reel.
     if os.environ.get("POST_STORY", "true").lower() == "false" or not reachable(cover):
