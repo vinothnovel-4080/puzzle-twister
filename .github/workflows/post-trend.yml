@@ -1,0 +1,115 @@
+name: Post trend puzzle
+
+# Three extra posts a day from trends.json, alongside the planned 7:47 am reel:
+#   slot 1  12:47 pm IST  (emoji word / find the odd one)  backup 1:17 pm
+#   slot 2   5:47 pm IST  (quick maths / matchstick)       backup 6:17 pm
+#   slot 3   8:47 pm IST  (riddle / logic)                 backup 9:17 pm
+# post_trend.py skips a post that is already on Instagram, so a backup never doubles up.
+on:
+  schedule:
+    - cron: "17 7 * * *"
+    - cron: "47 7 * * *"
+    - cron: "17 12 * * *"
+    - cron: "47 12 * * *"
+    - cron: "17 15 * * *"
+    - cron: "47 15 * * *"
+  workflow_dispatch:
+    inputs:
+      slot:
+        description: "Slot 1, 2 or 3"
+        required: true
+        default: "1"
+      day:
+        description: "Series day (1-7). Leave empty for today's."
+        required: false
+      dry_run:
+        description: "Only show the proof, don't post"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: instagram-post
+  cancel-in-progress: false
+
+env:
+  INSTAGRAM_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_ACCESS_TOKEN }}
+  IG_USER_ID: ${{ secrets.IG_USER_ID }}
+  MEDIA_BASE_URL: ${{ vars.MEDIA_BASE_URL || format('https://{0}.github.io/{1}', github.repository_owner, github.event.repository.name) }}
+  TREND_START_DATE: ${{ vars.TREND_START_DATE }}
+  GRAPH_BASE: ${{ vars.GRAPH_BASE }}
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      day: ${{ steps.which.outputs.day }}
+      slot: ${{ steps.which.outputs.slot }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Work out the day and slot
+        id: which
+        env:
+          SCHED: ${{ github.event.schedule }}
+          SLOT_INPUT: ${{ inputs.slot }}
+          DAY_INPUT: ${{ inputs.day }}
+        run: |
+          case "$SCHED" in
+            "17 7 * * *"|"47 7 * * *")   slot=1 ;;
+            "17 12 * * *"|"47 12 * * *") slot=2 ;;
+            "17 15 * * *"|"47 15 * * *") slot=3 ;;
+            *) slot="$SLOT_INPUT" ;;
+          esac
+          day="${DAY_INPUT:-$(python post_trend.py --which-day)}"
+          echo "day=$day" >> "$GITHUB_OUTPUT"
+          echo "slot=$slot" >> "$GITHUB_OUTPUT"
+          echo "Day $day, slot $slot"
+
+      - name: Proof
+        if: steps.which.outputs.day != '0'
+        env:
+          DAY: ${{ steps.which.outputs.day }}
+          SLOT: ${{ steps.which.outputs.slot }}
+        run: |
+          set -o pipefail
+          PYTHONUNBUFFERED=1 python post_trend.py --day "$DAY" --slot "$SLOT" --dry-run | tee proof.txt
+          video=$(grep -m1 '^Video: ' proof.txt | cut -d' ' -f2)
+          cover=$(grep -m1 '^Cover: ' proof.txt | cut -d' ' -f2)
+          {
+            echo "## Trend proof: day $DAY, slot $SLOT"
+            echo
+            echo "**Video:** [$video]($video)"
+            echo
+            echo "<img src=\"$cover\" width=\"270\" alt=\"cover\">"
+            echo
+            echo '```'
+            sed -n '/^Caption:/,/^Token OK/p' proof.txt | sed '1d;$d'
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+          curl -fsI "$video" > /dev/null || { echo "::error::Video link not reachable: $video"; exit 1; }
+
+  post:
+    needs: preview
+    if: needs.preview.outputs.day != '0' && !inputs.dry_run
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Post
+        env:
+          DAY: ${{ needs.preview.outputs.day }}
+          SLOT: ${{ needs.preview.outputs.slot }}
+        run: python post_trend.py --day "$DAY" --slot "$SLOT"

@@ -12,7 +12,9 @@ on:
       - render.py
       - reels.py
       - reels2.py
-      - sample_emoji.py
+      - trend.py
+      - trends.json
+      - trends_common.py
       - .github/workflows/build-reels.yml
 
 permissions:
@@ -95,12 +97,12 @@ jobs:
           ls -la "$REELS_OUT"
           test "$(ls "$REELS_OUT"/*.mp4 | wc -l)" -eq 11
 
-      - name: Build emoji puzzle sample
-        # A trial format; a failure here must not stop the daily reels from deploying.
+      - name: Build trend series (trends.json)
+        # A failure here must not stop the planned daily reels from deploying.
         continue-on-error: true
         env:
           EMOJI_FONT: ${{ github.workspace }}/fonts/NotoColorEmoji.ttf
-          SAMPLE_OUT: ${{ github.workspace }}/site/samples
+          TREND_OUT: ${{ github.workspace }}/site/trend
         run: |
           # Noto Color Emoji (bitmap version that Pillow can draw): Ubuntu package first, then GitHub tags.
           if timeout 180 sudo apt-get install -y -q --no-install-recommends fonts-noto-color-emoji \
@@ -112,7 +114,8 @@ jobs:
             done
           fi
           ls -la "$EMOJI_FONT"
-          python sample_emoji.py
+          python trend.py
+          ls "$TREND_OUT"/*.mp4 | wc -l
 
       - name: Assemble site
         run: |
