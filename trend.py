@@ -199,18 +199,18 @@ def draw_count(img, p, acc):
 
 def draw_memory(img, p, acc):
     d = ImageDraw.Draw(img)
-    cell, cx, cy = 190, RW / 2, 700
+    cell, cx, cy = 175, RW / 2, 735   # grid spans y 472..998, clear of the label pill
     if p.get("_phase") == "ask":
         x0, y0 = cx - cell * 1.5, cy - cell * 1.5
         for i in range(9):
             r, c = divmod(i, 3)
             x, y = x0 + c * cell + 10, y0 + r * cell + 10
             d.rounded_rectangle([x, y, x + cell - 20, y + cell - 20], radius=24, fill=acc)
-            R.ctext(d, x + (cell - 20) / 2, y + (cell - 20) / 2, "?", R.font(R.BOLD, 90), R.WHITE)
-        R.ctext(d, RW / 2, 1030, p["question"], R.font(R.BOLD, 46), R.INK)
+            R.ctext(d, x + (cell - 20) / 2, y + (cell - 20) / 2, "?", R.font(R.BOLD, 84), R.WHITE)
+        R.ctext(d, RW / 2, 1075, p["question"], R.font(R.BOLD, 44), R.INK)
     else:
-        emoji_block(img, p["grid"], 3, cx, cy, cell, 150)
-        R.ctext(d, RW / 2, 1030, "Remember where everything is!", R.font(R.SEMI, 44), R.MUTED)
+        emoji_block(img, p["grid"], 3, cx, cy, cell, 138)
+        R.ctext(d, RW / 2, 1075, "Remember where everything is!", R.font(R.SEMI, 44), R.MUTED)
 
 
 DRAW = {"emoji_word": draw_emoji_word, "odd_grid": draw_grid, "math": draw_math, "riddle": draw_riddle,
