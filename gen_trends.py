@@ -159,6 +159,7 @@ def main():
     used_words = {p.get("answer") for p in posts if p["kind"] == "emoji_word"}
     used_q = {p.get("question") for p in posts if p["kind"] == "riddle"}
     used_expr = {p.get("expr") for p in posts if p["kind"] == "math"}
+    used_grid = [(p["base"], p["odd"]) for p in posts if p["kind"] == "odd_grid"]
     next_id = max(p["id"] for p in posts) + 1
     added = []
     for day in range(last_day + 1, target + 1):
@@ -170,7 +171,11 @@ def main():
             used_words.add(ans)
             p1 = {"kind": "emoji_word", "emojis": emojis, "caption_emojis": cap, "answer": ans}
         else:
-            base, odd, is_emoji, name = rng.choice(GRID_PAIRS)
+            # prefer pairs never used; once all are used, avoid the most recent ones
+            free_g = [g for g in GRID_PAIRS if (g[0], g[1]) not in used_grid] or \
+                     [g for g in GRID_PAIRS if (g[0], g[1]) not in used_grid[-6:]]
+            base, odd, is_emoji, name = rng.choice(free_g)
+            used_grid.append((base, odd))
             p1 = {"kind": "odd_grid", "base": base, "odd": odd, "emoji": is_emoji, "name": name,
                   "rows": 6, "cols": 6, "odd_row": rng.randint(1, 6), "odd_col": rng.randint(1, 6)}
         # slot 2

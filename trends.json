@@ -29,7 +29,7 @@
     {"id": 25, "day": 9, "slot": 1, "kind": "emoji_word", "emojis": ["💧", "🍉"], "caption_emojis": "💧 + 🍉", "answer": "WATERMELON"},
     {"id": 26, "day": 9, "slot": 2, "kind": "math", "expr": "6 + 6 × 9 - 2 = ?", "choices": ["106", "57", "58"], "answer_letter": "C"},
     {"id": 27, "day": 9, "slot": 3, "kind": "riddle", "question": "What comes next? 1, 3, 6, 10, 15, ...", "choices": ["20", "22", "21"], "answer_letter": "C"},
-    {"id": 28, "day": 10, "slot": 1, "kind": "odd_grid", "base": "O", "odd": "Q", "emoji": false, "name": "letter", "rows": 6, "cols": 6, "odd_row": 6, "odd_col": 6},
+    {"id": 28, "day": 10, "slot": 1, "kind": "odd_grid", "base": "E", "odd": "F", "emoji": false, "name": "letter", "rows": 6, "cols": 6, "odd_row": 6, "odd_col": 6},
     {"id": 29, "day": 10, "slot": 2, "kind": "math", "expr": "12 + 12 ÷ 4 × 2 = ?", "choices": ["18", "21", "12"], "answer_letter": "A"},
     {"id": 30, "day": 10, "slot": 3, "kind": "riddle", "question": "What has many teeth but can't bite?", "choices": ["A saw", "A comb", "A zip"], "answer_letter": "B"}
   ]
