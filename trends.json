@@ -2,33 +2,35 @@
   "start_date": "2026-11-25",
   "slots": {"1": "12:47 IST", "2": "17:47 IST", "3": "20:47 IST"},
   "posts": [
-    {"id": 1, "day": 1, "slot": 1, "kind": "emoji_word", "emojis": ["🌧", "🏹"], "caption_emojis": "🌧️ + 🏹", "answer": "RAINBOW",
-     "ask": "💬 Type the word in the comments. We reveal the answer on 27 Nov!\n📤 Send this to the friend who always guesses first.\n"},
+    {"id": 1, "day": 1, "slot": 1, "kind": "emoji_word", "emojis": ["🌧", "🏹"], "caption_emojis": "🌧️ + 🏹", "answer": "RAINBOW", "ask": "💬 Type the word in the comments. We reveal the answer on 27 Nov!\n📤 Send this to the friend who always guesses first.\n"},
     {"id": 2, "day": 1, "slot": 2, "kind": "math", "expr": "8 - 2 × 3 + 1 = ?", "choices": ["19", "3", "1"], "answer_letter": "B"},
     {"id": 3, "day": 1, "slot": 3, "kind": "riddle", "question": "When I was 6, my sister was half my age. Now I'm 40. How old is my sister?", "choices": ["20", "37", "34"], "answer_letter": "B"},
-
     {"id": 4, "day": 2, "slot": 1, "kind": "odd_grid", "base": "😀", "odd": "😃", "emoji": true, "name": "face", "rows": 6, "cols": 6, "odd_row": 3, "odd_col": 5},
     {"id": 5, "day": 2, "slot": 2, "kind": "math", "expr": "20 ÷ 4 + 6 × 2 = ?", "choices": ["22", "17", "32"], "answer_letter": "B"},
     {"id": 6, "day": 2, "slot": 3, "kind": "riddle", "question": "A bat and a ball cost ₹110 together. The bat costs ₹100 more than the ball. How much is the ball?", "choices": ["₹10", "₹15", "₹5"], "answer_letter": "C"},
-
     {"id": 7, "day": 3, "slot": 1, "kind": "emoji_word", "emojis": ["⭐", "🐟"], "caption_emojis": "⭐ + 🐟", "answer": "STARFISH"},
     {"id": 8, "day": 3, "slot": 2, "kind": "math", "expr": "6 + 6 × 0 = ?", "choices": ["0", "6", "12"], "answer_letter": "B"},
     {"id": 9, "day": 3, "slot": 3, "kind": "riddle", "question": "2 cats catch 2 mice in 2 minutes. How many cats catch 10 mice in 10 minutes?", "choices": ["2", "10", "5"], "answer_letter": "A"},
-
     {"id": 10, "day": 4, "slot": 1, "kind": "odd_grid", "base": "O", "odd": "Q", "emoji": false, "name": "letter", "rows": 6, "cols": 6, "odd_row": 5, "odd_col": 2},
     {"id": 11, "day": 4, "slot": 2, "kind": "math", "expr": "12 ÷ 3 × 2 = ?", "choices": ["2", "6", "8"], "answer_letter": "C"},
     {"id": 12, "day": 4, "slot": 3, "kind": "riddle", "question": "What comes next? 1, 1, 2, 3, 5, 8, ...", "choices": ["13", "11", "12"], "answer_letter": "A"},
-
     {"id": 13, "day": 5, "slot": 1, "kind": "emoji_word", "emojis": ["✋", "👜"], "caption_emojis": "✋ + 👜", "answer": "HANDBAG"},
     {"id": 14, "day": 5, "slot": 2, "kind": "math", "expr": "10 - 10 ÷ 2 = ?", "choices": ["5", "0", "10"], "answer_letter": "A"},
     {"id": 15, "day": 5, "slot": 3, "kind": "riddle", "question": "Mary's father has 5 daughters: Nana, Nene, Nini and Nono. What is the fifth daughter's name?", "choices": ["Nunu", "Mary", "Nina"], "answer_letter": "B"},
-
     {"id": 16, "day": 6, "slot": 1, "kind": "odd_grid", "base": "6", "odd": "9", "emoji": false, "name": "number", "rows": 6, "cols": 6, "odd_row": 2, "odd_col": 6},
     {"id": 17, "day": 6, "slot": 2, "kind": "math", "expr": "50 + 50 - 25 × 0 + 2 + 2 = ?", "choices": ["104", "4", "0"], "answer_letter": "A"},
     {"id": 18, "day": 6, "slot": 3, "kind": "riddle", "question": "A farmer has 17 sheep. All but 9 run away. How many sheep are left?", "choices": ["8", "17", "9"], "answer_letter": "C"},
-
     {"id": 19, "day": 7, "slot": 1, "kind": "emoji_word", "emojis": ["🌲", "🍎"], "caption_emojis": "🌲 + 🍎", "answer": "PINEAPPLE"},
     {"id": 20, "day": 7, "slot": 2, "kind": "math", "expr": "2 + 2 × 2 = ?", "choices": ["8", "6", "4"], "answer_letter": "B"},
-    {"id": 21, "day": 7, "slot": 3, "kind": "riddle", "question": "How many months of the year have 28 days?", "choices": ["1", "2", "12"], "answer_letter": "C"}
+    {"id": 21, "day": 7, "slot": 3, "kind": "riddle", "question": "How many months of the year have 28 days?", "choices": ["1", "2", "12"], "answer_letter": "C"},
+    {"id": 22, "day": 8, "slot": 1, "kind": "odd_grid", "base": "P", "odd": "R", "emoji": false, "name": "letter", "rows": 6, "cols": 6, "odd_row": 4, "odd_col": 6},
+    {"id": 23, "day": 8, "slot": 2, "kind": "math", "expr": "4 + 9 × 2 = ?", "choices": ["20", "26", "22"], "answer_letter": "C"},
+    {"id": 24, "day": 8, "slot": 3, "kind": "riddle", "question": "What has a thumb and four fingers but isn't alive?", "choices": ["A glove", "A fork", "A hand"], "answer_letter": "A"},
+    {"id": 25, "day": 9, "slot": 1, "kind": "emoji_word", "emojis": ["💧", "🍉"], "caption_emojis": "💧 + 🍉", "answer": "WATERMELON"},
+    {"id": 26, "day": 9, "slot": 2, "kind": "math", "expr": "6 + 6 × 9 - 2 = ?", "choices": ["106", "57", "58"], "answer_letter": "C"},
+    {"id": 27, "day": 9, "slot": 3, "kind": "riddle", "question": "What comes next? 1, 3, 6, 10, 15, ...", "choices": ["20", "22", "21"], "answer_letter": "C"},
+    {"id": 28, "day": 10, "slot": 1, "kind": "odd_grid", "base": "O", "odd": "Q", "emoji": false, "name": "letter", "rows": 6, "cols": 6, "odd_row": 6, "odd_col": 6},
+    {"id": 29, "day": 10, "slot": 2, "kind": "math", "expr": "12 + 12 ÷ 4 × 2 = ?", "choices": ["18", "21", "12"], "answer_letter": "A"},
+    {"id": 30, "day": 10, "slot": 3, "kind": "riddle", "question": "What has many teeth but can't bite?", "choices": ["A saw", "A comb", "A zip"], "answer_letter": "B"}
   ]
 }
