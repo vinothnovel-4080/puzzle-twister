@@ -86,12 +86,13 @@ def draw_choices(img, p, acc):
     if not p.get("choices"):
         return img
     d = ImageDraw.Draw(img)
-    x0, x1, y0, y1 = 36, RW - 36, 1170, 1690  # wide enough to hide the bonus box and brand line
+    x0, x1, y0, y1 = 36, RW - 36, 1196, 1700  # wide enough to hide the bonus box and brand line;
+                                              # starts below the last clue line (Day 5, Day 10)
     d.rounded_rectangle([x0, y0, x1, y1], radius=36, fill=R.INK, outline=acc, width=6)
-    R.ctext(d, RW / 2, y0 + 62, "COMMENT A, B OR C", R.font(R.BOLD, 46), acc)
+    R.ctext(d, RW / 2, y0 + 58, "COMMENT A, B OR C", R.font(R.BOLD, 46), acc)
     maxw = x1 - 60 - (x0 + 160)
     for i, (letter, text) in enumerate(zip("ABC", p["choices"])):
-        cy = y0 + 170 + i * 120
+        cy = y0 + 160 + i * 118
         d.ellipse([x0 + 50, cy - 42, x0 + 134, cy + 42], fill=acc)
         R.ctext(d, x0 + 92, cy + 2, letter, R.font(R.BOLD, 48), R.WHITE)
         size = 50
