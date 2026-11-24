@@ -102,7 +102,16 @@ jobs:
           EMOJI_FONT: ${{ github.workspace }}/fonts/NotoColorEmoji.ttf
           SAMPLE_OUT: ${{ github.workspace }}/site/samples
         run: |
-          curl -fsSL --retry 3 -o "$EMOJI_FONT" https://github.com/googlefonts/noto-emoji/raw/main/fonts/NotoColorEmoji.ttf
+          # Noto Color Emoji (bitmap version that Pillow can draw): Ubuntu package first, then GitHub tags.
+          if timeout 180 sudo apt-get install -y -q --no-install-recommends fonts-noto-color-emoji \
+             && [ -f /usr/share/fonts/truetype/noto/NotoColorEmoji.ttf ]; then
+            cp /usr/share/fonts/truetype/noto/NotoColorEmoji.ttf "$EMOJI_FONT"
+          else
+            for tag in v2.047 v2.042 v2.038; do
+              curl -fsSL --retry 2 -o "$EMOJI_FONT" "https://raw.githubusercontent.com/googlefonts/noto-emoji/$tag/fonts/NotoColorEmoji.ttf" && break
+            done
+          fi
+          ls -la "$EMOJI_FONT"
           python sample_emoji.py
 
       - name: Assemble site
