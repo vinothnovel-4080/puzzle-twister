@@ -179,6 +179,42 @@ def main():
     r = graph("POST", f"{ig}/media_publish", creation_id=cid)
     link = graph("GET", r["id"], fields="permalink").get("permalink")
     print(f"Published! Media id {r['id']}  {link}")
+    after_post(ig, r["id"], day, cover)
+
+
+FIRST_COMMENT = "Your answer? Comment A, B or C 👇 No peeking at other comments 😉"
+
+
+def try_graph(what, method, path, **params):
+    """Like graph(), but a failure only prints a warning (the reel is already live)."""
+    try:
+        return graph(method, path, **params)
+    except SystemExit as e:
+        print(f"WARNING: {what} failed: {e}")
+        return None
+
+
+def after_post(ig, media_id, day, cover):
+    # 1. First comment, so the reel never starts with an empty comment section.
+    #    Needs the instagram_manage_comments permission on the token.
+    if day <= 10 and try_graph("first comment", "POST", f"{media_id}/comments", message=FIRST_COMMENT):
+        print("First comment posted.")
+    # 2. The day's cover as a Story, pointing followers at the new reel.
+    if os.environ.get("POST_STORY", "true").lower() == "false" or not reachable(cover):
+        return
+    s = try_graph("story", "POST", f"{ig}/media", media_type="STORIES", image_url=cover)
+    if not s:
+        return
+    for _ in range(30):
+        st = try_graph("story status", "GET", s["id"], fields="status_code") or {}
+        if st.get("status_code") == "FINISHED":
+            break
+        if st.get("status_code") == "ERROR":
+            print(f"WARNING: Instagram could not process the story: {st}")
+            return
+        time.sleep(5)
+    if try_graph("story publish", "POST", f"{ig}/media_publish", creation_id=s["id"]):
+        print("Story posted.")
 
 
 if __name__ == "__main__":

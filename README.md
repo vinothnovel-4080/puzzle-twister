@@ -4,12 +4,14 @@ Everything runs on GitHub. Nothing needs to be installed on your computer.
 
 | File | What it does |
 |---|---|
-| `puzzles.json` | All 10 puzzles: question, clues, hint, answer, explanation, bonus, captions and hashtags. Edit this to make a new batch. |
+| `puzzles.json` | All 10 puzzles: question, clues, hint, answer, A/B/C choices, explanation, bonus, captions and hashtags. Edit this to make a new batch. |
 | `verify.py` | Checks by brute force that every answer is right and each logic puzzle has exactly one solution. |
 | `render.py` | Draws the 1080x1350 Instagram carousel slides (puzzle, hint, answer) into `out/day_XX/`. |
 | `reels.py` | Shared helpers for reels: English voiceover (Kokoro TTS), generated background music, sound effects. |
-| `reels2.py` | Builds the 15-second vertical reels: yesterday's answer, then today's puzzle, a 3-2-1 countdown and "Answer tomorrow". |
-| `post_reel.py` | Posts the day's reel to Instagram through the Graph API (create container, wait, publish). |
+| `reels2.py` | Builds the 15-second vertical reels: yesterday's answer, then today's puzzle, a 3-2-1 countdown with the A/B/C options and "Answer tomorrow". |
+| `post_reel.py` | Posts the day's reel with its cover, then adds a first comment ("Comment A, B or C") and posts the cover as a Story. |
+| `reply_comments.py` | Replies to new comments on the latest reels, without giving the answer away. |
+| `.github/workflows/reply-comments.yml` | **Reply to comments**: runs `reply_comments.py` every 30 minutes. |
 | `.github/workflows/build-reels.yml` | **Build reels**: makes all 11 reels and the slides, then publishes them on GitHub Pages. Runs when puzzles or scripts change, or by hand. |
 | `.github/workflows/post-reel.yml` | **Post reel to Instagram**: runs every day at 8:00 am IST and posts that day's reel. Can also be run by hand for any day. |
 
@@ -32,6 +34,16 @@ Every day around 8:00 am IST (7:47, with backups at 8:17 and 9:47 in case GitHub
 
 If a run fails, GitHub emails you; re-run that day from Actions → *Post reel to Instagram* → *Run workflow*.
 Captions use at most 5 hashtags (Instagram's current limit) and put the search keywords in the first line.
+
+## Interaction
+- Every puzzle has A/B/C options, in the caption and on the reel's countdown and end screens.
+- Right after posting, the script comments "Your answer? Comment A, B or C 👇" and posts the cover as a Story
+  (set the repository variable `POST_STORY` to `false` to stop the Story).
+- **Reply to comments** answers new comments every 30 minutes with a varied, friendly reply that never says
+  whether the answer is right.
+- First comment and replies need the **instagram_manage_comments** permission on the token. Without it they
+  are skipped with a warning; posting still works.
+- Quiz stickers can't be added through the API: to use one, share the reel to your Story in the app.
 
 ## Posting a day by hand
 Actions → *Post reel to Instagram* → Run workflow → enter the day (1-11; 11 = Day 10 answer reel).

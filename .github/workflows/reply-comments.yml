@@ -1,0 +1,40 @@
+name: Reply to comments
+
+# Every 30 minutes: reply to new comments on the latest reels (see reply_comments.py).
+# Needs the instagram_manage_comments permission on the INSTAGRAM_ACCESS_TOKEN secret.
+on:
+  schedule:
+    - cron: "7,37 * * * *"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Only show what it would reply"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: reply-comments
+  cancel-in-progress: false
+
+jobs:
+  reply:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      INSTAGRAM_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_ACCESS_TOKEN }}
+      IG_USER_ID: ${{ secrets.IG_USER_ID }}
+      GRAPH_BASE: ${{ vars.GRAPH_BASE }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Reply
+        env:
+          DRY: ${{ inputs.dry_run && '--dry-run' || '' }}
+        run: python reply_comments.py $DRY

@@ -19,8 +19,10 @@
       "bonus_answer": "110 (10 x 11)",
       "caption": "Day 1 warm-up! Can you crack the pattern? Kids, spot the gaps. Experts, try the bonus. Drop your answer in the comments and swipe for a hint. Answer tomorrow!",
       "hashtags": ["#puzzletwister", "#brainteaser", "#numberpuzzle", "#mathpuzzle", "#familyfun", "#braingames"],
-      "reel_caption": "Can you crack this number pattern? 🧠 A quick brain teaser for kids and grown-ups.\n\n2, 6, 12, 20, 30 ... which number comes next?\n\n🧩 Expert bonus: What is the 10th number in this pattern?\n\n💬 Comment your answer. We reveal it tomorrow!\n📌 Save this and tag a friend who'd solve it first.\n🔔 Follow @puzzledaily_123 for a new brain teaser every day.\n\n",
-      "reel_hashtags": ["#puzzletwister", "#brainteaser", "#mathpuzzle", "#numberpuzzle", "#puzzleoftheday"]
+      "reel_caption": "Can you crack this number pattern? 🧠 A quick brain teaser for kids and grown-ups.\n\n2, 6, 12, 20, 30 ... which number comes next?\n\n👉 A) 40\n👉 B) 44\n👉 C) 42\n\n🧩 Expert bonus: What is the 10th number in this pattern?\n\n💬 Comment A, B or C. We reveal it tomorrow!\n📌 Save this and tag a friend who'd solve it first.\n🔔 Follow @puzzledaily_123 for a new brain teaser every day.\n\n",
+      "reel_hashtags": ["#puzzletwister", "#brainteaser", "#mathpuzzle", "#numberpuzzle", "#puzzleoftheday"],
+      "choices": ["40", "44", "42"],
+      "answer_letter": "C"
     },
     {
       "day": 2,
@@ -52,8 +54,10 @@
       "bonus_answer": "42 (multiply first: 10 x 4 = 40, then 2 + 40)",
       "caption": "Shapes have secret values! Solve line by line and tell us the last answer. The bonus has a sneaky twist... Comment below!",
       "hashtags": ["#puzzletwister", "#mathchallenge", "#shapepuzzle", "#brainteaser", "#kidsactivities", "#iqtest"],
-      "reel_caption": "Shape math puzzle 🔺⚪🟪 Solve it line by line, but watch the last row!\n\nEach shape stands for a number. What does the last line equal?\n\n🧩 Expert bonus: What is Square + Circle x Triangle?\n\n✅ Yesterday's answer: 42\n\n💬 Comment your answer. We reveal it tomorrow!\n📌 Save this and tag a friend who'd solve it first.\n🔔 Follow @puzzledaily_123 for a new brain teaser every day.\n\n",
-      "reel_hashtags": ["#puzzletwister", "#brainteaser", "#mathpuzzle", "#shapepuzzle", "#iqtest"]
+      "reel_caption": "Shape math puzzle 🔺⚪🟪 Solve it line by line, but watch the last row!\n\nEach shape stands for a number. What does the last line equal?\n\n👉 A) 16\n👉 B) 14\n👉 C) 20\n\n🧩 Expert bonus: What is Square + Circle x Triangle?\n\n✅ Yesterday's answer: C) 42\n\n💬 Comment A, B or C. We reveal it tomorrow!\n📌 Save this and tag a friend who'd solve it first.\n🔔 Follow @puzzledaily_123 for a new brain teaser every day.\n\n",
+      "reel_hashtags": ["#puzzletwister", "#brainteaser", "#mathpuzzle", "#shapepuzzle", "#iqtest"],
+      "choices": ["16", "14", "20"],
+      "answer_letter": "A"
     },
     {
       "day": 3,
@@ -68,8 +72,10 @@
       "bonus_answer": "PLANET",
       "caption": "Word lovers, this one's for you! Unscramble the animal, then find the hidden bonus word. First correct comment gets a shout-out!",
       "hashtags": ["#puzzletwister", "#wordpuzzle", "#wordgame", "#scramble", "#spelling", "#familyfun"],
-      "reel_caption": "Word scramble 🐾 Unscramble these 8 letters to find an animal.\n\nP H E L T N A E ... can you spell it in 10 seconds?\n\n🧩 Expert bonus: Hidden in those same letters is a 6-letter word for the place we all live. What is it?\n\n✅ Yesterday's answer: 16\n\n💬 Comment your answer. We reveal it tomorrow!\n📌 Save this and tag a friend who'd solve it first.\n🔔 Follow @puzzledaily_123 for a new brain teaser every day.\n\n",
-      "reel_hashtags": ["#puzzletwister", "#brainteaser", "#wordpuzzle", "#wordgame", "#anagram"]
+      "reel_caption": "Word scramble 🐾 Unscramble these 8 letters to find an animal.\n\nP H E L T N A E ... which animal is it?\n\n👉 A) PANTHER\n👉 B) ELEPHANT\n👉 C) LEOPARD\n\n🧩 Expert bonus: Hidden in those same letters is a 6-letter word for the place we all live. What is it?\n\n✅ Yesterday's answer: 16\n\n💬 Comment A, B or C. We reveal it tomorrow!\n📌 Save this and tag a friend who'd solve it first.\n🔔 Follow @puzzledaily_123 for a new brain teaser every day.\n\n",
+      "reel_hashtags": ["#puzzletwister", "#brainteaser", "#wordpuzzle", "#wordgame", "#anagram"],
+      "choices": ["PANTHER", "ELEPHANT", "LEOPARD"],
+      "answer_letter": "B"
     },
     {
       "day": 4,
@@ -87,8 +93,10 @@
       "bonus_answer": "18 (6 for each of the 3 levels)",
       "caption": "Most people get this wrong the first time! How many triangles do YOU see? Comment your number before you swipe.",
       "hashtags": ["#puzzletwister", "#countthetriangles", "#visualpuzzle", "#braingames", "#opticalpuzzle", "#brainteaser"],
-      "reel_caption": "How many triangles do you see? 🔺 Most people count too few!\n\nCount every triangle, big and small. Then comment your number.\n\n🧩 Expert bonus: How many triangles would there be with TWO cross lines instead of one?\n\n✅ Yesterday's answer: ELEPHANT\n\n💬 Comment your answer. We reveal it tomorrow!\n📌 Save this and tag a friend who'd solve it first.\n🔔 Follow @puzzledaily_123 for a new brain teaser every day.\n\n",
-      "reel_hashtags": ["#puzzletwister", "#brainteaser", "#countthetriangles", "#visualpuzzle", "#iqtest"]
+      "reel_caption": "How many triangles do you see? 🔺 Most people count too few!\n\nCount every triangle, big and small.\n\n👉 A) 12\n👉 B) 9\n👉 C) 6\n\n🧩 Expert bonus: How many triangles would there be with TWO cross lines instead of one?\n\n✅ Yesterday's answer: B) ELEPHANT\n\n💬 Comment A, B or C. We reveal it tomorrow!\n📌 Save this and tag a friend who'd solve it first.\n🔔 Follow @puzzledaily_123 for a new brain teaser every day.\n\n",
+      "reel_hashtags": ["#puzzletwister", "#brainteaser", "#countthetriangles", "#visualpuzzle", "#iqtest"],
+      "choices": ["12", "9", "6"],
+      "answer_letter": "A"
     },
     {
       "day": 5,
@@ -107,8 +115,10 @@
       "bonus_answer": "Only clue 1 (Dev would no longer be at the right end)",
       "caption": "Detective mode ON! Use the 3 clues to seat everyone. Write the order from left to right in the comments.",
       "hashtags": ["#puzzletwister", "#logicpuzzle", "#reasoning", "#seatingarrangement", "#detective", "#braingames"],
-      "reel_caption": "Logic puzzle: who sits where? 🪑 Use 3 clues to seat 4 friends.\n\nSeat 1 is on the left. Write the order from left to right.\n\n🧩 Expert bonus: If Ben and Dev swapped seats, which clue would break?\n\n✅ Yesterday's answer: 12\n\n💬 Comment your answer. We reveal it tomorrow!\n📌 Save this and tag a friend who'd solve it first.\n🔔 Follow @puzzledaily_123 for a new brain teaser every day.\n\n",
-      "reel_hashtags": ["#puzzletwister", "#brainteaser", "#logicpuzzle", "#reasoning", "#puzzleoftheday"]
+      "reel_caption": "Logic puzzle: who sits where? 🪑 Use 3 clues to seat 4 friends.\n\nSeat 1 is on the left. Which order is right?\n\n👉 A) Ana, Cara, Ben, Dev\n👉 B) Ben, Ana, Cara, Dev\n👉 C) Ben, Cara, Ana, Dev\n\n🧩 Expert bonus: If Ben and Dev swapped seats, which clue would break?\n\n✅ Yesterday's answer: A) 12\n\n💬 Comment A, B or C. We reveal it tomorrow!\n📌 Save this and tag a friend who'd solve it first.\n🔔 Follow @puzzledaily_123 for a new brain teaser every day.\n\n",
+      "reel_hashtags": ["#puzzletwister", "#brainteaser", "#logicpuzzle", "#reasoning", "#puzzleoftheday"],
+      "choices": ["Ana, Cara, Ben, Dev", "Ben, Ana, Cara, Dev", "Ben, Cara, Ana, Dev"],
+      "answer_letter": "B"
     },
     {
       "day": 6,
@@ -123,8 +133,10 @@
       "bonus_answer": "49 (7 x 7)",
       "caption": "One of these numbers doesn't belong. Can you spot it AND explain why? Comment your answer!",
       "hashtags": ["#puzzletwister", "#oddoneout", "#numberpuzzle", "#mathfun", "#brainteaser", "#quiz"],
-      "reel_caption": "Odd one out 🔢 Which number doesn't belong, and why?\n\n16, 25, 36, 48, 64 ... one of these breaks the pattern.\n\n🧩 Expert bonus: Which square number should replace 48 to keep the pattern going in order?\n\n✅ Yesterday's answer: Ben, Ana, Cara, Dev\n\n💬 Comment your answer. We reveal it tomorrow!\n📌 Save this and tag a friend who'd solve it first.\n🔔 Follow @puzzledaily_123 for a new brain teaser every day.\n\n",
-      "reel_hashtags": ["#puzzletwister", "#brainteaser", "#oddoneout", "#numberpuzzle", "#mathpuzzle"]
+      "reel_caption": "Odd one out 🔢 Which number doesn't belong?\n\n16, 25, 36, 48, 64 ... one of these breaks the pattern.\n\n👉 A) 36\n👉 B) 64\n👉 C) 48\n\n🧩 Expert bonus: Which square number should replace 48 to keep the pattern going in order?\n\n✅ Yesterday's answer: B) Ben, Ana, Cara, Dev\n\n💬 Comment A, B or C. We reveal it tomorrow!\n📌 Save this and tag a friend who'd solve it first.\n🔔 Follow @puzzledaily_123 for a new brain teaser every day.\n\n",
+      "reel_hashtags": ["#puzzletwister", "#brainteaser", "#oddoneout", "#numberpuzzle", "#mathpuzzle"],
+      "choices": ["36", "64", "48"],
+      "answer_letter": "C"
     },
     {
       "day": 7,
@@ -142,8 +154,10 @@
       "bonus_answer": "5 years (Rhea 20, brother 10)",
       "caption": "Family math time! The main question is quick, but the bonus makes grown-ups think. Comment both answers!",
       "hashtags": ["#puzzletwister", "#agepuzzle", "#mathpuzzle", "#wordproblem", "#familyfun", "#brainteaser"],
-      "reel_caption": "Age puzzle 👧👦 Rhea is 15, three times her brother's age.\n\nHow old is her brother? Kids can solve it, the bonus makes grown-ups think.\n\n🧩 Expert bonus: In how many years will Rhea be exactly twice as old as her brother?\n\n✅ Yesterday's answer: 48\n\n💬 Comment your answer. We reveal it tomorrow!\n📌 Save this and tag a friend who'd solve it first.\n🔔 Follow @puzzledaily_123 for a new brain teaser every day.\n\n",
-      "reel_hashtags": ["#puzzletwister", "#brainteaser", "#agepuzzle", "#mathpuzzle", "#wordproblem"]
+      "reel_caption": "Age puzzle 👧👦 Rhea is 15, three times her brother's age.\n\nHow old is her brother? Kids can solve it, the bonus makes grown-ups think.\n\n👉 A) 5\n👉 B) 12\n👉 C) 45\n\n🧩 Expert bonus: In how many years will Rhea be exactly twice as old as her brother?\n\n✅ Yesterday's answer: C) 48\n\n💬 Comment A, B or C. We reveal it tomorrow!\n📌 Save this and tag a friend who'd solve it first.\n🔔 Follow @puzzledaily_123 for a new brain teaser every day.\n\n",
+      "reel_hashtags": ["#puzzletwister", "#brainteaser", "#agepuzzle", "#mathpuzzle", "#wordproblem"],
+      "choices": ["5", "12", "45"],
+      "answer_letter": "A"
     },
     {
       "day": 8,
@@ -167,8 +181,10 @@
       "bonus_answer": "1+2+...+9 = 45. Three rows share it equally, so each row is 45 / 3 = 15.",
       "caption": "A square full of magic! Fill in the missing letters and comment A, B, C, D. Bonus brains: explain the 15!",
       "hashtags": ["#puzzletwister", "#magicsquare", "#mathpuzzle", "#sudokulovers", "#braingames", "#learning"],
-      "reel_caption": "Magic square puzzle ✨ Every row and column adds up to 15.\n\nFind the missing numbers A, B, C and D.\n\n🧩 Expert bonus: Add up all 9 numbers. How does that total explain why each row must be 15?\n\n✅ Yesterday's answer: 5\n\n💬 Comment your answer. We reveal it tomorrow!\n📌 Save this and tag a friend who'd solve it first.\n🔔 Follow @puzzledaily_123 for a new brain teaser every day.\n\n",
-      "reel_hashtags": ["#puzzletwister", "#brainteaser", "#magicsquare", "#mathpuzzle", "#numberpuzzle"]
+      "reel_caption": "Magic square puzzle ✨ Every row and column adds up to 15.\n\nWhat are the missing numbers A, B, C and D?\n\n👉 A) 7, 9, 1, 3\n👉 B) 9, 7, 3, 1\n👉 C) 7, 1, 9, 3\n\n🧩 Expert bonus: Add up all 9 numbers. How does that total explain why each row must be 15?\n\n✅ Yesterday's answer: A) 5\n\n💬 Comment A, B or C. We reveal it tomorrow!\n📌 Save this and tag a friend who'd solve it first.\n🔔 Follow @puzzledaily_123 for a new brain teaser every day.\n\n",
+      "reel_hashtags": ["#puzzletwister", "#brainteaser", "#magicsquare", "#mathpuzzle", "#numberpuzzle"],
+      "choices": ["7, 9, 1, 3", "9, 7, 3, 1", "7, 1, 9, 3"],
+      "answer_letter": "A"
     },
     {
       "day": 9,
@@ -183,8 +199,10 @@
       "bonus_answer": "16 (jumps of +1, +2, +3, +4, +5)",
       "caption": "ABC... but not as you know it! What's the next letter? Bonus: the number version. Comment below!",
       "hashtags": ["#puzzletwister", "#alphabetpuzzle", "#patterns", "#brainteaser", "#logic", "#familyfun"],
-      "reel_caption": "Letter pattern 🔤 A, C, F, J, O ... what comes next?\n\nCount the jumps in the alphabet to find the next letter.\n\n🧩 Expert bonus: Same rule, with numbers: 1, 2, 4, 7, 11, ?\n\n✅ Yesterday's answer: A = 7, B = 9, C = 1, D = 3\n\n💬 Comment your answer. We reveal it tomorrow!\n📌 Save this and tag a friend who'd solve it first.\n🔔 Follow @puzzledaily_123 for a new brain teaser every day.\n\n",
-      "reel_hashtags": ["#puzzletwister", "#brainteaser", "#letterpuzzle", "#patterns", "#logicpuzzle"]
+      "reel_caption": "Letter pattern 🔤 A, C, F, J, O ... what comes next?\n\nCount the jumps in the alphabet to find the next letter.\n\n👉 A) T\n👉 B) U\n👉 C) V\n\n🧩 Expert bonus: Same rule, with numbers: 1, 2, 4, 7, 11, ?\n\n✅ Yesterday's answer: A) A = 7, B = 9, C = 1, D = 3\n\n💬 Comment A, B or C. We reveal it tomorrow!\n📌 Save this and tag a friend who'd solve it first.\n🔔 Follow @puzzledaily_123 for a new brain teaser every day.\n\n",
+      "reel_hashtags": ["#puzzletwister", "#brainteaser", "#letterpuzzle", "#patterns", "#logicpuzzle"],
+      "choices": ["T", "U", "V"],
+      "answer_letter": "B"
     },
     {
       "day": 10,
@@ -203,10 +221,12 @@
       "bonus_answer": "4",
       "caption": "Final day of our first puzzle week! Who won the race? Write the full finishing order in the comments. Bonus is for true champions!",
       "hashtags": ["#puzzletwister", "#logicpuzzle", "#rankingpuzzle", "#reasoning", "#brainteaser", "#challenge"],
-      "reel_caption": "Race logic puzzle 🏃 Who finished first? The final twister of the week!\n\nFive friends, three clues. Write the full finishing order.\n\n🧩 Expert bonus: If we removed the clue 'Noor did not win', how many finishing orders would be possible?\n\n✅ Yesterday's answer: U\n\n💬 Comment your answer. We reveal it tomorrow!\n📌 Save this and tag a friend who'd solve it first.\n🔔 Follow @puzzledaily_123 for a new brain teaser every day.\n\n",
-      "reel_hashtags": ["#puzzletwister", "#brainteaser", "#logicpuzzle", "#rankingpuzzle", "#reasoning"]
+      "reel_caption": "Race logic puzzle 🏃 Who finished first? The final twister of the week!\n\nFive friends, three clues. Which finishing order is right?\n\n👉 A) Kiran, Omar, Noor, Maya, Leo\n👉 B) Noor, Kiran, Omar, Maya, Leo\n👉 C) Kiran, Noor, Omar, Maya, Leo\n\n🧩 Expert bonus: If we removed the clue 'Noor did not win', how many finishing orders would be possible?\n\n✅ Yesterday's answer: B) U\n\n💬 Comment A, B or C. We reveal it tomorrow!\n📌 Save this and tag a friend who'd solve it first.\n🔔 Follow @puzzledaily_123 for a new brain teaser every day.\n\n",
+      "reel_hashtags": ["#puzzletwister", "#brainteaser", "#logicpuzzle", "#rankingpuzzle", "#reasoning"],
+      "choices": ["Kiran, Omar, Noor, Maya, Leo", "Noor, Kiran, Omar, Maya, Leo", "Kiran, Noor, Omar, Maya, Leo"],
+      "answer_letter": "A"
     }
   ],
-  "finale_caption": "Day 10 answer: Kiran, Omar, Noor, Maya, Leo 🏁 Did you get the race order right?\n\nThat's all 10 Puzzle Twister brain teasers! How many did you solve? Tell us in the comments 👇\n\n📌 Save this series and share it with a friend who loves puzzles.\n🔔 Follow @puzzledaily_123 for the next batch of twisters.\n\n",
+  "finale_caption": "Day 10 answer: A) Kiran, Omar, Noor, Maya, Leo 🏁 Did you get the race order right?\n\nThat's all 10 Puzzle Twister brain teasers! How many did you solve? Tell us in the comments 👇\n\n📌 Save this series and share it with a friend who loves puzzles.\n🔔 Follow @puzzledaily_123 for the next batch of twisters.\n\n",
   "finale_hashtags": ["#puzzletwister", "#brainteaser", "#logicpuzzle", "#puzzleoftheday", "#puzzlechallenge"]
 }

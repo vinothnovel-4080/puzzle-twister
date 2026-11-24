@@ -37,7 +37,7 @@ ANSWER_VO = {
     9: "Yesterday's answer: U! The jumps grow by one.",
     10: "Yesterday's answer: Kiran, Omar, Noor, Maya, Leo!",
 }
-END_VO = "Comment your answer. Reveal tomorrow!"
+END_VO = "Comment A, B or C. Reveal tomorrow!"
 FINALE_VO = "Did you get them all? New twisters coming soon. Follow Puzzle Twister!"
 
 
@@ -81,6 +81,26 @@ def canvas(slide, top_fn, bottom_text):
     return img
 
 
+def draw_choices(img, p, acc):
+    """A/B/C answer panel over the lower part of the puzzle (covers the bonus box)."""
+    if not p.get("choices"):
+        return img
+    d = ImageDraw.Draw(img)
+    x0, x1, y0, y1 = 70, RW - 70, 1170, 1690
+    d.rounded_rectangle([x0, y0, x1, y1], radius=36, fill=R.INK, outline=acc, width=6)
+    R.ctext(d, RW / 2, y0 + 62, "COMMENT A, B OR C", R.font(R.BOLD, 46), acc)
+    maxw = x1 - 60 - (x0 + 160)
+    for i, (letter, text) in enumerate(zip("ABC", p["choices"])):
+        cy = y0 + 170 + i * 120
+        d.ellipse([x0 + 50, cy - 42, x0 + 134, cy + 42], fill=acc)
+        R.ctext(d, x0 + 92, cy + 2, letter, R.font(R.BOLD, 48), R.WHITE)
+        size = 50
+        while size > 28 and d.textlength(text, font=R.font(R.BOLD, size)) > maxw:
+            size -= 2
+        d.text((x0 + 160, cy), text, font=R.font(R.BOLD, size), fill=R.WHITE, anchor="lm")
+    return img
+
+
 def frames(day, data):
     brand, P = data["brand"], data["puzzles"]
     imgs = {}
@@ -116,11 +136,11 @@ def frames(day, data):
                 d.text((90, 190), "FAST!", font=R.font(R.BOLD, 70), fill=acc)
                 d.ellipse([RW - 330, 50, RW - 90, 290], fill=acc, outline=R.WHITE, width=8)
                 R.ctext(d, RW - 210, 172, str(n), R.font(R.BOLD, 150), R.WHITE)
-            imgs[f"c{n}"] = canvas(puzzle, top_c, "PUZZLE TWISTER  ·  DAY %02d" % day)
+            imgs[f"c{n}"] = draw_choices(canvas(puzzle, top_c, "PUZZLE TWISTER  ·  DAY %02d" % day), p, acc)
         def top_e(d):
             R.ctext(d, RW / 2, 105, "ANSWER", R.font(R.BOLD, 70), R.WHITE)
             R.ctext(d, RW / 2, 200, "TOMORROW!", R.font(R.BOLD, 96), acc)
-        imgs["end"] = canvas(puzzle, top_e, "COMMENT  ·  FOLLOW @PUZZLEDAILY_123")
+        imgs["end"] = draw_choices(canvas(puzzle, top_e, "COMMENT  ·  FOLLOW @PUZZLEDAILY_123"), p, acc)
     paths = {}
     for k, im in imgs.items():
         paths[k] = f"{TMP}/v2_day{day:02d}_{k}.png"

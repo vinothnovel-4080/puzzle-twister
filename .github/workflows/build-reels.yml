@@ -96,9 +96,10 @@ jobs:
 
       - name: Assemble site
         run: |
-          mkdir -p site/slides site/covers
+          mkdir -p site/slides site/covers site/previews
           cp -r out/day_* site/slides/
           cp out/covers/*.jpg site/covers/
+          cp "$REELS_TMP"/v2_day*_end.png site/previews/ || true
           test "$(ls site/covers/*.jpg | wc -l)" -eq 11
           {
             echo '<!doctype html><meta charset="utf-8"><title>Puzzle Twister reels</title>'
