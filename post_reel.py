@@ -140,6 +140,14 @@ def main():
     except Exception as e:
         raise SystemExit(f"Video URL not reachable: {url} ({e}). Run the 'Build reels' workflow first.")
     ig = os.environ["IG_USER_ID"].strip()
+    # Never post the same day twice (a late scheduled run plus a manual run, or a backup run).
+    if "--force" not in args:
+        first_line = caption.split("\n")[0].strip()
+        recent = graph("GET", f"{ig}/media", fields="caption,permalink", limit=15).get("data", [])
+        for m in recent:
+            if (m.get("caption") or "").strip().startswith(first_line):
+                print(f"Already posted: {m.get('permalink')}  (use --force to post again)")
+                return
     c = graph("POST", f"{ig}/media", media_type="REELS", video_url=url, caption=caption, share_to_feed="true")
     cid = c["id"]
     for _ in range(60):  # up to ~10 min for Instagram to process the video

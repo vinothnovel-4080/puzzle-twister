@@ -26,9 +26,9 @@ Everything runs on GitHub. Nothing needs to be installed on your computer.
 5. **Test the post:** Actions → *Post reel to Instagram* → Run workflow, tick *dry run*. Check the log shows the right day, video link and caption.
 
 ## Daily posting
-Every day at 8:00 am IST the **Post reel to Instagram** workflow:
+Every day around 8:00 am IST (7:47, with backups at 8:17 and 9:47 in case GitHub starts late) the **Post reel to Instagram** workflow:
 1. Records the **proof** (day, video link, caption, hashtags) on the run's summary page and checks the token.
-2. Posts that day's reel automatically. The log ends with the Instagram link.
+2. Posts that day's reel automatically, unless it is already on Instagram. The log ends with the Instagram link.
 
 If a run fails, GitHub emails you; re-run that day from Actions → *Post reel to Instagram* → *Run workflow*.
 Captions use at most 5 hashtags (Instagram's current limit) and put the search keywords in the first line.
