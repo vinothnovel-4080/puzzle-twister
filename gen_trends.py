@@ -322,6 +322,11 @@ def main():
         p3 = S3[i % 4](rng)
         for slot, p in ((1, p1), (2, p2), (3, p3)):
             p = {"id": next_id, "day": day, "slot": slot, **p}
+            if p.get("choices"):  # rotate the right answer through A, B, C so there's no pattern
+                ch, right = p["choices"], "ABC".index(p["answer_letter"])
+                want = next_id % 3
+                ch[right], ch[want] = ch[want], ch[right]
+                p["answer_letter"] = "ABC"[want]
             next_id += 1
             check(p)
             added.append(p)
