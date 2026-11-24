@@ -1,5 +1,5 @@
 {
-  "start_date": "2026-11-26",
+  "start_date": "2026-11-25",
   "slots": {"1": "12:47 IST", "2": "17:47 IST", "3": "20:47 IST"},
   "posts": [
     {"id": 1, "day": 1, "slot": 1, "kind": "emoji_word", "emojis": ["🌧", "🏹"], "caption_emojis": "🌧️ + 🏹", "answer": "RAINBOW",
