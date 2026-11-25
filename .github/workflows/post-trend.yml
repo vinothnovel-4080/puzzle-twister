@@ -1,18 +1,20 @@
 name: Post trend puzzle
 
 # Three extra posts a day from trends.json, alongside the planned 7:47 am reel:
-#   slot 1  12:47 pm IST  (emoji word / find the odd one)  backup 1:17 pm
-#   slot 2   5:47 pm IST  (quick maths)                    backup 6:17 pm
-#   slot 3   8:47 pm IST  (riddle / logic)                 backup 9:17 pm
-# post_trend.py skips a post that is already on Instagram, so a backup never doubles up.
+#   slot 1  12:47 pm IST  (visual puzzles)       retries every 10 min until 2:07 pm
+#   slot 2   5:47 pm IST  (quick maths / memory) retries every 10 min until 7:07 pm
+#   slot 3   8:47 pm IST  (riddles)              retries every 10 min until 10:07 pm
+# GitHub sometimes starts scheduled runs late or drops them, hence the retries.
+# post_trend.py skips a post that is already on Instagram, so a retry never doubles up.
+# The slot comes from the cron line's hour (7-8 UTC = slot 1, 12-13 = 2, 15-16 = 3).
 on:
   schedule:
-    - cron: "17 7 * * *"
-    - cron: "47 7 * * *"
-    - cron: "17 12 * * *"
-    - cron: "47 12 * * *"
-    - cron: "17 15 * * *"
-    - cron: "47 15 * * *"
+    - cron: "17,27,37,47,57 7 * * *"
+    - cron: "7,17,27,37 8 * * *"
+    - cron: "17,27,37,47,57 12 * * *"
+    - cron: "7,17,27,37 13 * * *"
+    - cron: "17,27,37,47,57 15 * * *"
+    - cron: "7,17,27,37 16 * * *"
   workflow_dispatch:
     inputs:
       slot:
@@ -62,10 +64,11 @@ jobs:
           SLOT_INPUT: ${{ inputs.slot }}
           DAY_INPUT: ${{ inputs.day }}
         run: |
-          case "$SCHED" in
-            "17 7 * * *"|"47 7 * * *")   slot=1 ;;
-            "17 12 * * *"|"47 12 * * *") slot=2 ;;
-            "17 15 * * *"|"47 15 * * *") slot=3 ;;
+          hour=$(echo "$SCHED" | awk '{print $2}')
+          case "$hour" in
+            7|8)   slot=1 ;;
+            12|13) slot=2 ;;
+            15|16) slot=3 ;;
             *) slot="$SLOT_INPUT" ;;
           esac
           day="${DAY_INPUT:-$(python post_trend.py --which-day)}"

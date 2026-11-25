@@ -28,7 +28,7 @@ Everything runs on GitHub. Nothing needs to be installed on your computer.
 5. **Test the post:** Actions → *Post reel to Instagram* → Run workflow, tick *dry run*. Check the log shows the right day, video link and caption.
 
 ## Daily posting
-Every day around 8:00 am IST (7:47, with backups at 8:17 and 9:47 in case GitHub starts late) the **Post reel to Instagram** workflow:
+Every day from 7:47 am IST (retrying every 10 minutes until 10:17 in case GitHub starts late or drops a run) the **Post reel to Instagram** workflow:
 1. Records the **proof** (day, video link, caption, hashtags) on the run's summary page and checks the token.
 2. Posts that day's reel automatically, unless it is already on Instagram. The log ends with the Instagram link.
 
@@ -55,7 +55,7 @@ Captions use at most 5 hashtags (Instagram's current limit) and put the search k
 | 3 | 8:47 pm | Riddle · logic | A/B/C, shown when the countdown reaches 3 |
 
 - `trend.py` renders each reel (title, 10 s countdown with timer bar, end card), cover and caption into `trend/` on Pages.
-- `post_trend.py` + **Post trend puzzle** workflow post them, with backups 30 minutes after each slot.
+- `post_trend.py` + **Post trend puzzle** workflow post them, retrying every 10 minutes for about 80 minutes after each slot.
 - Day 1 is `start_date` in `trends.json` (or the repository variable `TREND_START_DATE`).
 - Each caption reveals the previous day's answer for the same slot.
 - Builds only render yesterday's, today's and upcoming posts (set `TREND_BUILD_ALL=1` to render everything).

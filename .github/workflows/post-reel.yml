@@ -4,15 +4,15 @@ name: Post reel to Instagram
 #   1. "preview" records the proof (day, video link, caption, hashtags) on the run page
 #      and checks the token, without posting anything.
 #   2. "post" then posts that exact day's reel automatically.
-# GitHub often starts scheduled runs 10-60 minutes late (and busy times like :00 and :30
-# can be skipped), so there are three triggers. post_reel.py skips a day that is
+# GitHub often starts scheduled runs late and sometimes drops them entirely, so this
+# tries every 10 minutes from 7:47 to 10:17 am IST. post_reel.py skips a day that is
 # already on Instagram, so only the first run that gets through posts.
 # post_reel.py works out the day from START_DATE and does nothing outside the 11-day series.
 on:
   schedule:
-    - cron: "17 2 * * *"   # 7:47 am IST
-    - cron: "47 2 * * *"   # 8:17 am IST (backup)
-    - cron: "17 4 * * *"   # 9:47 am IST (backup)
+    - cron: "17,27,37,47,57 2 * * *"      # 7:47 - 8:27 am IST
+    - cron: "7,17,27,37,47,57 3 * * *"    # 8:37 - 9:27 am IST
+    - cron: "7,17,27,37,47 4 * * *"       # 9:37 - 10:17 am IST
   workflow_dispatch:
     inputs:
       day:
