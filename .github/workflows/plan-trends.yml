@@ -3,9 +3,8 @@ name: Plan trend puzzles
 # Every Sunday (and on demand): add new trend puzzles so ~10 days are always ready,
 # commit them to trends.json, then rebuild the reels. Pushes made by this workflow
 # don't trigger other workflows, so it starts "Build reels" itself.
+# The Scheduler workflow runs the planner every night; this is for running it by hand.
 on:
-  schedule:
-    - cron: "17 18 * * 0"   # Sunday 11:47 pm IST
   workflow_dispatch:
     inputs:
       days_ahead:

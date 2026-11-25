@@ -27,12 +27,23 @@ Everything runs on GitHub. Nothing needs to be installed on your computer.
    `https://vinothnovel-4080.github.io/puzzle-twister/`.
 5. **Test the post:** Actions → *Post reel to Instagram* → Run workflow, tick *dry run*. Check the log shows the right day, video link and caption.
 
-## Daily posting
-Every day from 7:47 am IST (retrying every 10 minutes until 10:17 in case GitHub starts late or drops a run) the **Post reel to Instagram** workflow:
-1. Records the **proof** (day, video link, caption, hashtags) on the run's summary page and checks the token.
-2. Posts that day's reel automatically, unless it is already on Instagram. The log ends with the Instagram link.
+## Daily posting: the Scheduler
+GitHub's built-in cron drops runs, so posting is done by one always-on **Scheduler** workflow
+(`scheduler.py`). It stays awake for ~5h40m, checks every 5 minutes what is due, then starts its
+next run; an hourly trigger restarts it if a run is ever lost.
 
-If a run fails, GitHub emails you; re-run that day from Actions → *Post reel to Instagram* → *Run workflow*.
+| What | Window (IST) | Runs |
+|---|---|---|
+| Planned reel | 7:47 am – 12:00 pm | `post_reel.py` (reel, cover, Story) |
+| Trend slot 1 | 12:47 – 5:00 pm | `post_trend.py --slot 1` |
+| Trend slot 2 | 5:47 – 8:30 pm | `post_trend.py --slot 2` |
+| Trend slot 3 | 8:47 – 11:59 pm | `post_trend.py --slot 3` |
+| Token check | 5:47 – 7:30 am | once a day |
+| Planner | 12:30 – 5:00 am | `gen_trends.py`, commit, start **Build reels** |
+
+A post is retried every 5 minutes until it succeeds (or is found already on Instagram). If something
+is still missing when its window closes, the run fails and GitHub emails you. To post by hand, use
+Actions → *Post reel to Instagram* or *Post trend puzzle* → *Run workflow*.
 Captions use at most 5 hashtags (Instagram's current limit) and put the search keywords in the first line.
 
 ## Interaction
