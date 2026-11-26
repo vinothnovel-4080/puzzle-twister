@@ -51,6 +51,18 @@ def graph(method, path, **params):
         raise SystemExit(f"Graph API error {e.code}: {e.read().decode()[:500]}")
 
 
+def token_days_left():
+    """Days until the token (or its data access) expires; None if unknown or it never expires."""
+    if not token().startswith("EAA"):
+        return None
+    try:
+        info = graph("GET", "debug_token", input_token=token()).get("data", {})
+    except SystemExit:
+        return None
+    ends = [t for t in (info.get("expires_at"), info.get("data_access_expires_at")) if t]
+    return None if not ends else (min(ends) - time.time()) / 86400
+
+
 def post_for_day(day):
     d = json.load(open(os.path.join(HERE, "puzzles.json"), encoding="utf-8"))
     if day == 11:

@@ -82,6 +82,15 @@ def token_check(t):
     if code != 0:
         missed.append("token check failed: replace INSTAGRAM_ACCESS_TOKEN")
         print("::error::Instagram token check failed", flush=True)
+        return
+    # Warn 10 days ahead, so the token is replaced before any post fails.
+    code, out = sh([sys.executable, "-c",
+                    "from post_reel import token_days_left as d; n = d(); "
+                    "print('Token days left:', 'unknown' if n is None else f'{n:.0f}')"])
+    left = out.rsplit(":", 1)[-1].strip()
+    if left.isdigit() and int(left) <= 10:
+        missed.append(f"token expires in {left} days: replace INSTAGRAM_ACCESS_TOKEN")
+        print(f"::error::Instagram token expires in {left} days", flush=True)
 
 
 def planner(t):

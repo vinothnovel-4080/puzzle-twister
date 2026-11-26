@@ -34,5 +34,10 @@ jobs:
           acct = graph("GET", os.environ["IG_USER_ID"].strip(), fields="username")
           t = token()
           print(f"Token OK ({t[:3]}..., {len(t)} chars): can post as @{acct.get('username')}")
+          from post_reel import token_days_left
+          n = token_days_left()
+          print("Token days left:", "unknown" if n is None else f"{n:.0f}")
+          if n is not None and n <= 10:
+              raise SystemExit(f"Token expires in {n:.0f} days: replace INSTAGRAM_ACCESS_TOKEN now")
           EOF
           echo "Token OK. Posting will work today." >> "$GITHUB_STEP_SUMMARY"
