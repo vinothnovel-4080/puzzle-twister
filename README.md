@@ -61,7 +61,7 @@ Captions use at most 5 hashtags (Instagram's current limit) and put the search k
 
 | Slot | Time (IST) | Styles | Answers |
 |---|---|---|---|
-| 1 | 12:47 pm | Emoji word · find the odd one in a grid | Typed in the comments, no options |
+| 1 | 12:47 pm | Odd-one emoji grid every other day (6x6 → 7x7 → 8x8, ~9 s loop) · emoji word, count, spot the difference | Typed in the comments, no options |
 | 2 | 5:47 pm | Quick maths | A/B/C, shown when the countdown reaches 3 |
 | 3 | 8:47 pm | Riddle · logic | A/B/C, shown when the countdown reaches 3 |
 

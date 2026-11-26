@@ -99,8 +99,8 @@ jobs:
           test "$(ls "$REELS_OUT"/*.mp4 | wc -l)" -eq 11
 
       - name: Build trend series (trends.json)
-        # A failure here must not stop the planned daily reels from deploying.
-        continue-on-error: true
+        # A failure here stops the deploy, so the site that is already live (with today's trend
+        # reels) stays up instead of being replaced by one without them.
         env:
           EMOJI_FONT: ${{ github.workspace }}/fonts/NotoColorEmoji.ttf
           TREND_OUT: ${{ github.workspace }}/site/trend
