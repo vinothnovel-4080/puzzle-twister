@@ -459,14 +459,8 @@ def build_loop(data, p):
     cover(p, acc, title).save(os.path.join(OUT, stem + "_cover.jpg"), "JPEG", quality=90)
     Image.open(os.path.join(tmp, f"count_{N - 2:02d}.png")).save(os.path.join(OUT, stem + "_frame.png"))
     with open(os.path.join(OUT, stem + ".txt"), "w", encoding="utf-8") as f:
-        f.write(T.caption(data, p) + "
-
---- voice ---
-"
-                + f"0.1s  {hook}
-{t_intro:.1f}s  {intro}
-{A + N + 0.25:.1f}s  {end}
-")
+        f.write(T.caption(data, p) + "\n\n--- voice ---\n"
+                + f"0.1s  {hook}\n{t_intro:.1f}s  {intro}\n{A + N + 0.25:.1f}s  {end}\n")
     print(f"#{p['id']} {stem}: {p['kind']} {p['rows']}x{p['cols']} loop, countdown {N}s, total {pl['total']:.1f}s")
 
 
