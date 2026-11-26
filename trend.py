@@ -23,7 +23,7 @@ LANCZOS = getattr(Image, "Resampling", Image).LANCZOS
 ACCENT = {"emoji_word": R.ACCENTS[3], "odd_grid": R.ACCENTS[2], "math": R.ACCENTS[1],
           "riddle": R.ACCENTS[4], "stroop": R.ACCENTS[4], "first_word": R.ACCENTS[3],
           "spot_diff": R.ACCENTS[0], "count_emoji": R.ACCENTS[2], "memory": R.ACCENTS[1]}
-TOP = {"emoji_word": ("EMOJI PUZZLE", "GUESS THE WORD"), "odd_grid": ("FIND THE ODD ONE", "IN 10 SECONDS"),
+TOP = {"emoji_word": ("EMOJI PUZZLE", "GUESS THE WORD"), "odd_grid": ("FIND THE ODD ONE", "ONLY 1% CAN SPOT IT"),
        "math": ("QUICK MATHS", "CAN YOU SOLVE IT?"), "riddle": ("RIDDLE", "THINK FIRST!"),
        "stroop": ("BRAIN TEST", "SAY THE COLOUR!"), "first_word": ("WHAT'S THE FIRST", "WORD YOU SEE?"),
        "spot_diff": ("SPOT THE DIFFERENCE", "HOW MANY?"), "count_emoji": ("COUNT CHALLENGE", "HOW MANY?"),
@@ -39,8 +39,7 @@ def vo_lines(p):
         return ("Emoji puzzle! Which word do these emojis make? Type it in the comments!",
                 "Comment the word, and send this to a friend. Answer tomorrow!")
     if k == "odd_grid":
-        return ("Find the odd one out! You have ten seconds.",
-                "Comment the row and column, and send this to a friend. Answer tomorrow!")
+        return ("Only one percent can spot the odd one. Can you?", "Comment the row and column!")
     if k == "math":
         return ("Quick maths! What's the answer? Options appear at three.", VO_END_OPTIONS)
     if k == "stroop":
@@ -316,8 +315,8 @@ def spoken_answer(p):
     return None
 
 
-def top_title(p, acc, prev):
-    l1 = TOP[p["kind"]][0]
+def top_title(p, acc, prev, l1=None):
+    l1 = l1 or TOP[p["kind"]][0]
     def f(d):
         R.ctext(d, RW / 2, 80, "WELCOME TO PUZZLE TWISTER", R.font(R.BOLD, 46), R.WHITE)
         size = 80
@@ -344,7 +343,7 @@ def top_count(n, acc):
     return f
 
 
-END_TOP = {"stroop": ("HOW FAST", "WERE YOU?"), "first_word": ("MEANINGS", "TOMORROW!")}
+END_TOP = {"odd_grid": ("FOUND IT?", "COMMENT IT!"), "stroop": ("HOW FAST", "WERE YOU?"), "first_word": ("MEANINGS", "TOMORROW!")}
 
 
 def top_end(acc, kind=None):
@@ -424,7 +423,56 @@ def encode(segs, audio, path, acc, total):
     subprocess.run(cmd, check=True)
 
 
+def build_loop(data, p):
+    """Odd-one grids: a short reel that loops. The grid is on screen from the first frame with a
+    hook, the welcome and yesterday's answer are spoken over the countdown, and the last frame
+    shows the same grid, so the replay runs on without a jump."""
+    acc = ACCENT[p["kind"]]
+    stem = T.file_stem(p)
+    tmp = os.path.join(B.TMP, stem)
+    os.makedirs(tmp, exist_ok=True)
+    hook, end = vo_lines(p)
+    prev = T.find(data, p["day"] - 1, p["slot"])
+    said = spoken_answer(prev) if prev else None
+    intro = "Welcome to Puzzle Twister!" + (f" Yesterday's answer was {said}." if said else "")
+    v_intro, v_hook, v_end = B.tts(intro, B.SPEED), B.tts(hook, B.SPEED), B.tts(end, B.SPEED)
+    A = 1.2                                          # hook frame, grid already showing
+    t_intro = 0.1 + len(v_hook) / SR + 0.25
+    N = max(6, math.ceil(t_intro + len(v_intro) / SR + 0.3 - A))
+    C = max(1.6, len(v_end) / SR + 0.5)
+    pl = dict(v_hook=v_hook, v_end=v_end, A=A, N=N, C=C, total=A + N + C, hook_at=0.1,
+              options_at=None, extra=[(v_intro, t_intro)])
+    bottom = f"PUZZLE TWISTER  ·  #{p['id']}"
+    segs = []
+    title = frame(p, acc, top_title(p, acc, prev, "ONLY 1% CAN SPOT IT"), bottom, panel_comment)
+    fp = os.path.join(tmp, "title.png"); title.save(fp); segs.append((fp, A))
+    for n in range(N, 0, -1):
+        fp = os.path.join(tmp, f"count_{n:02d}.png")
+        frame(p, acc, top_count(n, acc), bottom, panel_comment, timer=(n, N)).save(fp)
+        segs.append((fp, 1.0))
+    fp = os.path.join(tmp, "end.png")
+    frame(p, acc, top_end(acc, "odd_grid"), "SEND THIS TO A FRIEND", panel_comment).save(fp)
+    segs.append((fp, C))
+    audio = os.path.join(tmp, "mix.wav")
+    mix(pl, audio, p["id"])
+    encode(segs, audio, os.path.join(OUT, stem + ".mp4"), acc, pl["total"])
+    cover(p, acc, title).save(os.path.join(OUT, stem + "_cover.jpg"), "JPEG", quality=90)
+    Image.open(os.path.join(tmp, f"count_{N - 2:02d}.png")).save(os.path.join(OUT, stem + "_frame.png"))
+    with open(os.path.join(OUT, stem + ".txt"), "w", encoding="utf-8") as f:
+        f.write(T.caption(data, p) + "
+
+--- voice ---
+"
+                + f"0.1s  {hook}
+{t_intro:.1f}s  {intro}
+{A + N + 0.25:.1f}s  {end}
+")
+    print(f"#{p['id']} {stem}: {p['kind']} {p['rows']}x{p['cols']} loop, countdown {N}s, total {pl['total']:.1f}s")
+
+
 def build(data, p):
+    if p["kind"] == "odd_grid":
+        return build_loop(data, p)
     acc = ACCENT[p["kind"]]
     stem = T.file_stem(p)
     tmp = os.path.join(B.TMP, stem)

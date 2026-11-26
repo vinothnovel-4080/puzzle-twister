@@ -98,7 +98,8 @@ def caption(data, p):
         head = f"Emoji puzzle #{n} 🧩 Guess the word from these emojis!\n\n{p['caption_emojis']} = ?\n\n"
         ask = "💬 Type the word in the comments. Answer tomorrow!\n📤 Send this to the friend who always guesses first.\n"
     elif k == "odd_grid":
-        head = f"Find the odd one #{n} 👀 Can you spot it in 10 seconds?\n\nOne {p['name']} in this grid is different.\n\n"
+        head = (f"Find the odd one #{n} 👀 Only 1% can spot it fast!\n\n"
+                f"One {p['name']} in this {p['rows']}x{p['cols']} grid is different. Watch it again if you need to 🔁\n\n")
         ask = "💬 Comment the row and column (like 2, 5). Answer tomorrow!\n📤 Send this to a friend with sharp eyes.\n"
     elif k == "math":
         head = f"Quick maths #{n} 🧮 Most people get this wrong at first!\n\n{p['expr'].replace('-', '−')}\n\n{opts}"

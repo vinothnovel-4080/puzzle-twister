@@ -1,7 +1,8 @@
 """Extend trends.json so there are always DAYS_AHEAD days of trend posts ready.
 
 Rotation (from day 11):
-Slot 1: emoji word -> spot the difference -> count challenge -> odd-one grid
+Slot 1: odd-one emoji grid every other day (6x6 -> 7x7 -> 8x8), in between:
+        emoji word -> count challenge -> spot the difference
 Slot 2: quick maths trap (answer computed, wrong options = common mistakes) <-> memory test
 Slot 3: riddle -> riddle -> number sequence -> riddle
         (with PSYCH = True: Stroop test -> riddle -> first word you see -> riddle)
@@ -67,13 +68,14 @@ RIDDLES = [
     ("What has a head and a tail but no body?", "A coin", "A snake", "A comet"),
     ("What gets bigger the more you take away from it?", "A hole", "A cake", "A shadow"),
 ]
+# Odd-one grids are emoji only (the smiley grid is our best post), using pairs that are hard to tell apart.
 GRID_PAIRS = [
-    ("😀", "😃", True, "face"), ("😁", "😄", True, "face"), ("🙂", "🙃", True, "face"),
-    ("🐱", "🐯", True, "animal"), ("🍎", "🍅", True, "fruit"),
-    ("O", "Q", False, "letter"), ("E", "F", False, "letter"), ("M", "N", False, "letter"),
-    ("P", "R", False, "letter"), ("C", "G", False, "letter"),
-    ("6", "9", False, "number"), ("8", "3", False, "number"), ("5", "6", False, "number"), ("1", "7", False, "number"),
+    ("😀", "😃", True, "face"), ("😁", "😄", True, "face"), ("😐", "😑", True, "face"),
+    ("😮", "😯", True, "face"), ("😗", "😙", True, "face"), ("😊", "🙂", True, "face"),
+    ("😢", "😥", True, "face"), ("😺", "😸", True, "cat"), ("🕐", "🕑", True, "clock"),
+    ("⭐", "🌟", True, "star"), ("🌕", "🌝", True, "moon"), ("😴", "😪", True, "face"),
 ]
+GRID_SIZES = [6, 7, 8]  # grids get harder: 6x6, 7x7, 8x8, then round again
 
 
 COLOURS = ["RED", "BLUE", "GREEN", "YELLOW", "PURPLE", "ORANGE"]
@@ -270,6 +272,8 @@ def main():
     used_q = {p.get("question") for p in posts if p["kind"] == "riddle"}
     used_expr = {p.get("expr") for p in posts if p["kind"] == "math"}
     used_grid = [(p["base"], p["odd"]) for p in posts if p["kind"] == "odd_grid"]
+    grids = [p["rows"] for p in posts if p["kind"] == "odd_grid"]
+    n_grid = [GRID_SIZES.index(grids[-1]) + 1 if grids and grids[-1] in GRID_SIZES else 0]  # next size up
     next_id = max(p["id"] for p in posts) + 1
     added = []
     used_sets = {p["meanings"][0][0] for p in posts if p["kind"] == "first_word"}
@@ -286,8 +290,10 @@ def main():
                  [g for g in GRID_PAIRS if (g[0], g[1]) not in used_grid[-6:]]
         base, odd, is_emoji, name = rng.choice(free_g)
         used_grid.append((base, odd))
+        n = GRID_SIZES[n_grid[0] % len(GRID_SIZES)]
+        n_grid[0] += 1
         return {"kind": "odd_grid", "base": base, "odd": odd, "emoji": is_emoji, "name": name,
-                "rows": 6, "cols": 6, "odd_row": rng.randint(1, 6), "odd_col": rng.randint(1, 6)}
+                "rows": n, "cols": n, "odd_row": rng.randint(1, n), "odd_col": rng.randint(1, n)}
 
     def math_trap(rng):
         for _ in range(20):
@@ -313,14 +319,15 @@ def main():
         return p
 
     # Rotation from day 11 (5 Dec): interactive formats in every slot.
-    S1 = [emoji_word, make_spot_diff, make_count, odd_grid]
+    # Slot 1: an odd-one grid every other day, with the other visual puzzles in between.
+    S1 = [emoji_word, odd_grid, make_count, odd_grid, make_spot_diff, odd_grid]
     S2 = [math_trap, make_memory]
     # Psychology formats (Stroop, first word) are on hold: set PSYCH = True to bring them back.
     S3 = [make_stroop, riddle, first_word, riddle] if PSYCH else [riddle, riddle, make_sequence, riddle]
     for day in range(last_day + 1, target + 1):
         rng = random.Random(f"puzzle-twister-{day}")
         i = day - 11
-        p1 = S1[i % 4](rng)
+        p1 = S1[i % len(S1)](rng)
         p2 = S2[i % 2](rng)
         p3 = S3[i % 4](rng)
         for slot, p in ((1, p1), (2, p2), (3, p3)):
