@@ -1,0 +1,4 @@
+{
+  "ananya": {"name": "Ananya", "face": "faces/indian_2.png", "voice": "priya", "accent": "Indian"},
+  "sophie": {"name": "Sophie", "face": "faces/western_2.png", "voice": "emma", "accent": "US"}
+}

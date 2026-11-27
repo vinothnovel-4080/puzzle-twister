@@ -1,2 +1,5 @@
-Put the 6 presenter portraits here: indian_1.png, indian_2.png, indian_3.png, western_1.png, western_2.png, western_3.png.
-Prompts: ../portrait_prompts.md
+Presenter portraits (AI-generated, original people). In use:
+  indian_2.png  = Ananya (voice: priya, Indian accent)
+  western_2.png = Sophie (voice: emma, US accent)
+Still to make: indian_1, indian_3, western_1, western_3 (prompts in ../portrait_prompts.md).
+Pairings: ../presenters.json
