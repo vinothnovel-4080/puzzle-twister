@@ -1,0 +1,54 @@
+name: Post Brain Bites
+
+# Posts the Brain Bites episode named in brainbites/post_request.json (reel + cover + Story).
+# Runs when that file changes (so committing a new request posts it), or by hand.
+# Waits for the video to go live on GitHub Pages first; skips an episode already on Instagram.
+on:
+  workflow_dispatch:
+    inputs:
+      slug:
+        description: "Episode, e.g. brain_bites_01. Empty = brainbites/post_request.json"
+        required: false
+      dry_run:
+        description: "Only show the proof, don't post"
+        type: boolean
+        default: false
+  push:
+    branches: [main]
+    paths:
+      - brainbites/post_request.json
+
+permissions:
+  contents: read
+
+concurrency:
+  group: instagram-post
+  cancel-in-progress: false
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      INSTAGRAM_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_ACCESS_TOKEN }}
+      IG_USER_ID: ${{ secrets.IG_USER_ID }}
+      MEDIA_BASE_URL: ${{ vars.MEDIA_BASE_URL || format('https://{0}.github.io/{1}', github.repository_owner, github.event.repository.name) }}
+      GRAPH_BASE: ${{ vars.GRAPH_BASE }}
+      POST_STORY: ${{ vars.POST_STORY || 'true' }}
+      POST_FIRST_COMMENT: "false"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Post
+        env:
+          SLUG_INPUT: ${{ inputs.slug }}
+          DRY: ${{ inputs.dry_run }}
+        run: |
+          slug="${SLUG_INPUT:-$(python -c "import json; print(json.load(open('brainbites/post_request.json'))['slug'])")}"
+          flag=""; [ "$DRY" = "true" ] && flag="--dry-run"
+          PYTHONUNBUFFERED=1 python post_brainbites.py "$slug" $flag | tee out.txt
+          grep -E "^(Published|Already posted)" out.txt >> "$GITHUB_STEP_SUMMARY" || true

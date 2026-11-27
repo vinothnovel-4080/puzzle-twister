@@ -16,6 +16,8 @@ on:
       - trends.json
       - trends_common.py
       - psych_samples.py
+      - "brainbites/*.mp4"
+      - "brainbites/*.jpg"
       - .github/workflows/build-reels.yml
 
 permissions:
@@ -130,6 +132,7 @@ jobs:
           mkdir -p site/slides site/covers site/previews
           cp -r out/day_* site/slides/
           cp out/covers/*.jpg site/covers/
+          [ -d brainbites ] && { mkdir -p site/brainbites; cp brainbites/*.mp4 brainbites/*.jpg site/brainbites/; } || true
           cp "$REELS_TMP"/v2_day*_end.png "$REELS_TMP"/v2_day*_reveal.png site/previews/ || true
           test "$(ls site/covers/*.jpg | wc -l)" -eq 11
           {
