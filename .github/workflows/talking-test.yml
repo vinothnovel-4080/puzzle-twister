@@ -128,9 +128,17 @@ jobs:
           FACE: ${{ steps.job.outputs.face }}
         run: |
           cd "$RUNNER_TEMP/SadTalker"
-          time "$RUNNER_TEMP/st/bin/python" inference.py --driven_audio "$GITHUB_WORKSPACE/line.wav" \
+          set +e
+          "$RUNNER_TEMP/st/bin/python" inference.py --driven_audio "$GITHUB_WORKSPACE/line.wav" \
             --source_image "$GITHUB_WORKSPACE/$FACE" --result_dir "$RUNNER_TEMP/result" \
-            --still --preprocess full --enhancer gfpgan --size 256 --cpu
+            --still --preprocess full --enhancer gfpgan --size 256 --cpu 2>&1 | tee "$RUNNER_TEMP/talk.log"
+          status=${PIPESTATUS[0]}
+          set -e
+          if [ "$status" != 0 ]; then
+            # surface the error as annotations (readable without signing in)
+            grep -v "it/s\]" "$RUNNER_TEMP/talk.log" | tail -12 | while IFS= read -r l; do echo "::error::${l:0:300}"; done
+            exit 1
+          fi
           mkdir -p "$GITHUB_WORKSPACE/talk_out"
           cp "$(ls -t $(find "$RUNNER_TEMP/result" -name '*.mp4') | head -1)" "$GITHUB_WORKSPACE/talk_out/${{ steps.job.outputs.who }}_test.mp4"
           ls -la "$GITHUB_WORKSPACE/talk_out"
